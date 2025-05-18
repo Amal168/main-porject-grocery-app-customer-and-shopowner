@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
@@ -8,9 +7,6 @@ import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/co
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/forgotpassword.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_bottum_bar.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Customer_Shop_Main_Page.dart';
-
-
-
 
 class Commonlogin extends StatefulWidget {
   const Commonlogin({super.key});
@@ -69,13 +65,15 @@ class _CommonloginState extends State<Commonlogin> {
                           hinttext: "Email",
                           validate: (p0) {
                             if (email.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    elevation: 10,
-                                    backgroundColor: toggle2color,
-                                    shape: CircleBorder(eccentricity: 0.9),
-                                      content:
-                                          Text("Please Enter  Your Email",textAlign: TextAlign.center,)));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      elevation: 10,
+                                      backgroundColor: toggle2color,
+                                      shape: CircleBorder(eccentricity: 0.9),
+                                      content: Text(
+                                        "Please Enter  Your Email",
+                                        textAlign: TextAlign.center,
+                                      )));
                             }
                             return null;
                           },
@@ -87,13 +85,15 @@ class _CommonloginState extends State<Commonlogin> {
                           hinttext: "password",
                           validate: (p0) {
                             if (password.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    elevation: 10,
-                                    backgroundColor: toggle2color,
-                                    shape: CircleBorder(eccentricity: 0.9),
-                                      content:
-                                          Text("Please Enter  Your Password",textAlign: TextAlign.center,)));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      elevation: 10,
+                                      backgroundColor: toggle2color,
+                                      shape: CircleBorder(eccentricity: 0.9),
+                                      content: Text(
+                                        "Please Enter  Your Password",
+                                        textAlign: TextAlign.center,
+                                      )));
                             }
                             return null;
                           },
@@ -134,26 +134,28 @@ class _CommonloginState extends State<Commonlogin> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (_) => ShopBottumBar()));
-                                }
-                                if (email.text == dummycustomermail &&
+                                } else if (email.text == dummycustomermail &&
                                     password.text == dummycustomerpass) {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (_) =>
                                               CustomerShopMainPage()));
-                                }
-                                if (email.text.isEmpty &&
+                                } else if (email.text.isEmpty &&
                                     password.text.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    elevation: 10,
-                                    backgroundColor: toggle2color,
-                                    shape: CircleBorder(eccentricity: 0.9),
-                                      content:
-                                          Text("Please Enter  Your Email And Password",textAlign: TextAlign.center,)));
+                                      SnackBar(
+                                          elevation: 10,
+                                          backgroundColor: toggle2color,
+                                          shape:
+                                              CircleBorder(eccentricity: 0.9),
+                                          content: Text(
+                                            "Please Enter  Your Email And Password",
+                                            textAlign: TextAlign.center,
+                                          )));
                                 }
                               }
+                              return null;
                             });
                           },
                           text: "Login",

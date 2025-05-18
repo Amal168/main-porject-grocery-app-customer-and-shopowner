@@ -38,16 +38,20 @@ class _ProductItemsState extends State<ProductItems>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: toggle2color,
         title: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.only(left: 10,right: 10),
           child: Container(
             // width: 250,
             height: 35,
             child: TextFormField(
+              cursorHeight: 15,
+              mouseCursor: MouseCursor.uncontrolled,
               validator: (value) {},
               controller: search,
               decoration: InputDecoration(
+                
                   fillColor: Colors.white,
                   filled: true,
                   prefixIcon: Icon(Icons.search),

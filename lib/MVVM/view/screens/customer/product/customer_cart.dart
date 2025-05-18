@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 class CustomerCart extends StatefulWidget {
   const CustomerCart({super.key});
@@ -11,7 +12,7 @@ class _CustomerCartState extends State<CustomerCart> {
   List<int> itemCounts = List.generate(3, (index) => 1);
   String? radioButton = "1"; 
   int deliveryFee = 0;
-  int discount = 0;
+  late int discount;
   
 
   int get subtotal => itemCounts.fold(0, (sum, count) => sum + (count * 20));
@@ -37,7 +38,7 @@ class _CustomerCartState extends State<CustomerCart> {
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                  "asset/images.jpg",
+                  "assets/images.jpg",
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,
@@ -118,7 +119,7 @@ class _CustomerCartState extends State<CustomerCart> {
               children: [
                 buildPriceRow("Subtotal", "${subtotal} Rs"),
                 buildPriceRow("Delivery Fee", "$deliveryFee Rs"),
-                buildPriceRow("Discount", "$discount Rs"),
+                buildPriceRow("Discount", "${radioButton=="1"?discount= 0:discount=2} Rs"),
                 const SizedBox(height: 10),
                 Row(
                   children: [

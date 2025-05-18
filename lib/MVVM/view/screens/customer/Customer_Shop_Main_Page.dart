@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/slider.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/Customer_Profile.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/customer_Bottom.dart';
+
 class CustomerShopMainPage extends StatefulWidget {
   const CustomerShopMainPage({super.key});
 
@@ -80,17 +81,15 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: SizedBox(
-          height: 43.3,
-          child: Custometextfield(
-            fronticn: const Icon(Icons.search, size: 22),
-            sides: 15,
-            wid: 327,
-            hei: 43.3,
-            hinttext: "Search",
-            validate: (p0) {},
-            textEditingController: _search,
-          ),
+        title: TextFormField(
+          decoration: InputDecoration(
+              hintText: "Search Your Shop",
+              prefixIcon: Icon(
+                Icons.search,
+                size: 30,
+              ),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
         ),
         actions: [
           GestureDetector(
@@ -108,10 +107,10 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 width: double.infinity,
                 height: 200,
-                child: const Sliderpage(),
+                child: Sliderpage(),
               ),
               const SizedBox(height: 10),
               const Text(
@@ -132,6 +131,10 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                     return InkWell(
                       onTap: () {
                         // Navigate to the corresponding shop page
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => CustomerBottom()));
                       },
                       child: Card(
                         color: Colors.white,
@@ -148,7 +151,7 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                                   border: Border.all(),
                                   borderRadius: BorderRadius.circular(15),
                                   image: const DecorationImage(
-                                    image: AssetImage("asset/571332.jpg"),
+                                    image: AssetImage("assets/571332.jpg"),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -194,6 +197,10 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                   return InkWell(
                     onTap: () {
                       // Navigate to the corresponding shop page
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => CustomerBottom()));
                     },
                     child: Card(
                       elevation: 10,
@@ -208,7 +215,7 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                               border: Border.all(),
                               borderRadius: BorderRadius.circular(15),
                               image: const DecorationImage(
-                                image: AssetImage("asset/571332.jpg"),
+                                image: AssetImage("assets/571332.jpg"),
                                 fit: BoxFit.cover,
                               ),
                             ),

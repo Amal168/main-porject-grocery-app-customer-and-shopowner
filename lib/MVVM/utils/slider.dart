@@ -11,9 +11,9 @@ class Sliderpage extends StatefulWidget {
 class _SliderpageState extends State<Sliderpage> {
   int currentcount = 0;
   final List sliderlist = [
-    'asset/add1.png',
-    'asset/add2.png',
-    'asset/add3.jpg'
+    'assets/add1.png',
+    'assets/add2.png',
+    'assets/add3.jpg'
   ];
   @override
   Widget build(BuildContext context) {
