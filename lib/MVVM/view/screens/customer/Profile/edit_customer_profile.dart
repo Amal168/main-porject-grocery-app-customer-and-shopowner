@@ -246,7 +246,9 @@ class _EditCustomerProfileState extends State<EditCustomerProfile> {
                 height: 20,
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                },
                 child: Card(
                   elevation: 10,
                   child: Container(

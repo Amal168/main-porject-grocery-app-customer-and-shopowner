@@ -1,8 +1,11 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
+import 'package:image_picker/image_picker.dart';
 class Addproduct extends StatefulWidget {
   const Addproduct({super.key});
 
@@ -17,8 +20,18 @@ class _AddproductState extends State<Addproduct> {
   final _stack = TextEditingController();
   String _dropdown1 = "Rice";
   String _dropdown2 = "Red";
-  String _dropdown3 = "Red";
   String radiogroup = " ";
+
+  File? _image;
+
+  Future pickimage(ImageSource source) async {
+    final imagefile = await ImagePicker().pickImage(source: source);
+    if (imagefile != null) {
+      setState(() {
+        _image = File(imagefile.path);
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +44,11 @@ class _AddproductState extends State<Addproduct> {
                 width: 133,
                 height: 133,
                 decoration: BoxDecoration(
+                  image: DecorationImage(image: _image != null
+                          ? FileImage(_image!)
+                          : const NetworkImage(
+                              "https://th.bing.com/th/id/OIP.EwG6x9w6RngqsKrPJYxULAHaHa?w=180&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+                            ) as ImageProvider,fit: BoxFit.fill),
                     border: Border.all(),
                     borderRadius: BorderRadius.circular(30)),
               ),
@@ -56,10 +74,16 @@ class _AddproductState extends State<Addproduct> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                           Navigator.pop(context);
+                                    pickimage(ImageSource.camera);
+                                        },
                                         child: Text("From Camera")),
                                     TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                           Navigator.pop(context);
+                                    pickimage(ImageSource.gallery);
+                                        },
                                         child: Text("From Device"))
                                   ],
                                 ),
@@ -87,7 +111,7 @@ class _AddproductState extends State<Addproduct> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("Product Name"),
+                  Text("Product Price"),
                   Container(
                     height: 49,
                     child: Custometextfield(
@@ -99,7 +123,7 @@ class _AddproductState extends State<Addproduct> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("Product Name"),
+                  Text("Peace/kg/g"),
                   Container(
                     height: 49,
                     child: Custometextfield(
@@ -111,7 +135,7 @@ class _AddproductState extends State<Addproduct> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("Product Name"),
+                  Text("Catogary"),
                   Container(
                     width: double.infinity,
                     height: 49,
@@ -149,7 +173,7 @@ class _AddproductState extends State<Addproduct> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("Product Name"),
+                  Text("Type"),
                   Container(
                     width: double.infinity,
                     height: 49,
@@ -190,7 +214,7 @@ class _AddproductState extends State<Addproduct> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("Product Name"),
+                  Text("Stock"),
                   Container(
                     height: 49,
                     child: Custometextfield(
@@ -202,54 +226,7 @@ class _AddproductState extends State<Addproduct> {
                   SizedBox(
                     height: 10,
                   ),
-                  Text("Product Name"),
-                  Container(
-                    width: double.infinity,
-                    height: 49,
-                    decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(15)),
-                    child: DropdownButton<String>(
-                        isExpanded: true,
-                        borderRadius: BorderRadius.circular(20),
-                        // focusColor: Colors.amber,
-                        // dropdownColor: Colors.white,
-                        // iconEnabledColor: Colors.red,
-                        // iconDisabledColor: Colors.orange,
-                        value: _dropdown3,
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        items: [
-                          DropdownMenuItem<String>(
-                              value: "Red",
-                              child: RadioListTile(
-                                title: Text("Yes"),
-                                value: "1",
-                                groupValue: radiogroup,
-                                onChanged: (value) {
-                                  setState(() {
-                                    radiogroup = value!;
-                                  });
-                                },
-                              )),
-                          DropdownMenuItem<String>(
-                              value: "Green",
-                              child: RadioListTile(
-                                title: Text("No"),
-                                value: "2",
-                                groupValue: radiogroup,
-                                onChanged: (value) {
-                                  setState(() {
-                                    radiogroup = value!;
-                                  });
-                                },
-                              )),
-                        ],
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _dropdown3 = newValue!;
-                          });
-                        }),
-                  ),
+                  
                 ],
               ),
             ),

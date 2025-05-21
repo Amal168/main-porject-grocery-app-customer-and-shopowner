@@ -86,7 +86,7 @@ class _OrderreceavedlistState extends State<Orderreceavedlist> {
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                  "asset/images.jpg",
+                  "assets/images.jpg",
                   width: 80,
                   height: 80,
                   fit: BoxFit.cover,

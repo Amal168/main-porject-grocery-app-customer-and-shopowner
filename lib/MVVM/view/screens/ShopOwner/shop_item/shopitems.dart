@@ -19,6 +19,8 @@ class _ShopitemsState extends State<Shopitems>
     with SingleTickerProviderStateMixin {
   late TabController tabcontrol;
 
+  final search = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -31,108 +33,111 @@ class _ShopitemsState extends State<Shopitems>
     super.dispose();
   }
 
-  final search = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: toggle2color,
-        title: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            width: 250,
-            height: 35,
-            child: TextFormField(
-              validator: (value) {},
-              controller: search,
-              decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15))),
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Stack(
+    return SafeArea(
+      child: Column(
+        children: [
+          // Search + Cart Row
+          Container(
+            color: toggle2color,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Row(
               children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(100)),
-                  child: IconButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStatePropertyAll(Colors.white)),
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => Addproduct()));
-                      },
-                      icon: Icon(
-                        Icons.shopping_cart,
-                        weight: 50,
-                      )),
-                ),
-                Positioned(
-                    right: 0,
-                    top: 20,
-                    child: Container(
-                      width: 20,
-                      height: 20,
-                      child: Center(
-                        child: Icon(Icons.add),
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    child: TextFormField(
+                      controller: search,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(Icons.search),
+                        contentPadding: EdgeInsets.zero,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
                       ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Stack(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: appbuttoncolor),
-                    ))
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: IconButton(
+                        icon: Icon(Icons.shopping_cart),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => Addproduct()));
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      child: Container(
+                        width: 18,
+                        height: 18,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: appbuttoncolor,
+                        ),
+                        child: Icon(
+                          Icons.add,
+                          size: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ],
             ),
-          )
+          ),
+      
+          // TabBar
+          Container(
+            color: toggle2color,
+            child: TabBar(
+              controller: tabcontrol,
+              isScrollable: true,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.white70,
+              indicatorColor: Colors.white,
+              indicatorWeight: 3,
+              tabs: const [
+                Tab(text: "All"),
+                Tab(text: "Rice"),
+                Tab(text: "Soap"),
+                Tab(text: "Snacks"),
+                Tab(text: "Toothpaste"),
+                Tab(text: "Cooking Oil"),
+              ],
+            ),
+          ),
+      
+          // TabBarView
+          Expanded(
+            child: TabBarView(
+              controller: tabcontrol,
+              children:  [
+                AllTab(),
+                RiceTab(),
+                SoapTab(),
+                SnacksTab(),
+                ToothpasteTab(),
+                CookingoilTab(),
+              ],
+            ),
+          ),
         ],
-        bottom: TabBar(
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white,
-          indicatorColor: Colors.white,
-          indicatorWeight: 5,
-          isScrollable: true, controller: tabcontrol, tabs: [
-          Tab(
-            text: "all",
-          ),
-          Tab(
-            text: "Rice",
-          ),
-          Tab(
-            text: "Soap",
-          ),
-          Tab(
-            text: "Snacks",
-          ),
-          Tab(
-            text: "Toothpaste",
-          ),
-          Tab(
-            text: "Cooking Oil",
-          ),
-        ]),
-      ),
-      body: Expanded(
-        child: TabBarView(controller: tabcontrol, children: [
-           AllTab(),
-          // Center(
-          //   child: Text("All"),
-          // ),
-          // Center(child: Text("Rice"),),
-          Ricetab(),
-          SoapTab(),
-          SnacksTab(),
-          ToothpasteTab(),
-          CookingoilTab()
-        ]),
       ),
     );
   }

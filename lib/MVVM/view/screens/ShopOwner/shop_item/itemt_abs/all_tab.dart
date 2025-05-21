@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
+
 class AllTab extends StatefulWidget {
   AllTab({super.key});
 
@@ -8,10 +9,19 @@ class AllTab extends StatefulWidget {
 }
 
 class _AllTabState extends State<AllTab> {
+  final stocknumber = TextEditingController();
   String radiobuttion = " ";
   int selectIndex = 0;
+  Color lowcolor = redbutton;
+  Color highcolor = toglecolor;
+  int count = 6;
+  bool buttonindex = true;
 
-  final stocknumber = TextEditingController();
+  void buttoncolor(index) {
+    setState(() {
+      buttonindex = index!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +33,16 @@ class _AllTabState extends State<AllTab> {
               itemCount: 5,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: 1,
-                  mainAxisSpacing: 2,
-                  mainAxisExtent: 360),
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 3,
+                  mainAxisExtent: 370),
               itemBuilder: (context, index) {
                 switch (selectIndex) {
                   case 0:
                     return Container(
-                      margin: EdgeInsets.all(5),
+                      margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          border: Border.all(color: const Color.fromARGB(255, 199, 199, 199)),
+                          border: Border.all(),
                           borderRadius: BorderRadius.circular(15)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -41,11 +51,11 @@ class _AllTabState extends State<AllTab> {
                             height: 10,
                           ),
                           Container(
-                            width: 120,
+                            width: 118,
                             height: 121,
-                            child: Image.asset("asset/images.jpg",fit: BoxFit.cover,),
+                            child: Image.asset("assets/images.jpg",fit: BoxFit.cover,),
                             decoration: BoxDecoration(
-                                border: Border.all(color: const Color.fromARGB(255, 199, 199, 199)),
+                                border: Border.all(),
                                 borderRadius: BorderRadius.circular(30)),
                           ),
                           SizedBox(
@@ -58,15 +68,30 @@ class _AllTabState extends State<AllTab> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text("Only 4 Left",
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.red)),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Only ",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: count < 4 ? lowcolor : highcolor)),
+                              Text("${count} ",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: count < 4 ? lowcolor : highcolor)),
+                              Text("Left",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: count < 4 ? lowcolor : highcolor)),
+                            ],
+                          ),
                           SizedBox(
                             height: 10,
                           ),
                           Text("100g 20Rs", style: TextStyle(fontSize: 15)),
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           Row(
                             // mainAxisSize: MainAxisSize.min,
@@ -97,10 +122,16 @@ class _AllTabState extends State<AllTab> {
                                           ),
                                           actions: [
                                             ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+
+                                                },
                                                 child: Text("Cancel")),
                                             ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  
+                                                },
                                                 child: Text("ok"))
                                           ],
                                         );
@@ -125,13 +156,18 @@ class _AllTabState extends State<AllTab> {
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          title: Text("Are You Sure"),
+                                          title: Text("Are You Sure",textAlign: TextAlign.center,),
                                           actions: [
                                             ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+
+                                                },
                                                 child: Text("Cancel")),
                                             ElevatedButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
                                                 child: Text("ok"))
                                           ],
                                         );

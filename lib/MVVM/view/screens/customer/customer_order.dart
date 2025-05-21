@@ -43,7 +43,42 @@ class _CustomerOrderState extends State<CustomerOrder> {
                                 backgroundColor:
                                     WidgetStatePropertyAll(listbutton),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                setState(() {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        content: Text(
+                                          "Are You Sure",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20),
+                                        ),
+                                        actions: [
+                                          ElevatedButton(
+                                            style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(toggle2color)),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            'This Order Has Been Deleted',textAlign: TextAlign.center,)));
+                                              },
+                                              child: Text('Ok',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+                                          ElevatedButton(
+                                            style: ButtonStyle(backgroundColor: WidgetStatePropertyAll(redbutton)),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('Cancel',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)))
+                                        ],
+                                      );
+                                    },
+                                  );
+                                });
+                              },
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: const [

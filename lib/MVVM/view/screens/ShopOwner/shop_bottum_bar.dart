@@ -19,10 +19,6 @@ class _ShopBottumBarState extends State<ShopBottumBar> {
   Widget build(BuildContext context) {
     
     return Scaffold(
-      appBar: AppBar(
-        leading: CircleAvatar(child: Image(image: AssetImage("asset/dummy profile photo.jpg"),fit:BoxFit.contain ,),)
-      ),
-      // backgroundColor: Colors.transparent,
       body: Center(child: currentPage.elementAt(_selectedindex),),
       bottomNavigationBar: Padding(
       

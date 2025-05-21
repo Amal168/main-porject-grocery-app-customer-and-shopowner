@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderReceved.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderSend.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+
 class Orderreceivedsend extends StatefulWidget {
   const Orderreceivedsend({super.key});
 
@@ -35,18 +35,15 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
-      body: Column(
+    return SafeArea(
+      child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Card(
               color: Colors.green,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               elevation: 5,
               child: ToggleSwitch(
                 initialLabelIndex: selected,
@@ -61,7 +58,6 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
                 borderColor: [Colors.black],
                 dividerMargin: 10,
                 minWidth: 150,
-                
                 radiusStyle: true,
                 minHeight: 60,
                 labels: _label,
@@ -69,7 +65,7 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
                 onToggle: (index) {
                   setState(() {
                     selected = index!;
-
+      
                     selected == 0 ? color = [toggle2color] : [Colors.white];
                     // debugPrint('Selected index: $selected');
                   });

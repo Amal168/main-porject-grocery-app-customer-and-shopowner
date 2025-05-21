@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
+
 class CustomerCart extends StatefulWidget {
   const CustomerCart({super.key});
 
@@ -10,10 +11,9 @@ class CustomerCart extends StatefulWidget {
 
 class _CustomerCartState extends State<CustomerCart> {
   List<int> itemCounts = List.generate(3, (index) => 1);
-  String? radioButton = "1"; 
+  String? radioButton = "1";
   int deliveryFee = 0;
   late int discount;
-  
 
   int get subtotal => itemCounts.fold(0, (sum, count) => sum + (count * 20));
 
@@ -68,9 +68,12 @@ class _CustomerCartState extends State<CustomerCart> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed: () {
-                        // itemCounts[index].
-                      },icon: Icon(Icons.close),),
+                      IconButton(
+                        onPressed: () {
+                          // itemCounts[index].
+                        },
+                        icon: Icon(Icons.close),
+                      ),
                       Row(
                         children: [
                           IconButton(
@@ -119,7 +122,8 @@ class _CustomerCartState extends State<CustomerCart> {
               children: [
                 buildPriceRow("Subtotal", "${subtotal} Rs"),
                 buildPriceRow("Delivery Fee", "$deliveryFee Rs"),
-                buildPriceRow("Discount", "${radioButton=="1"?discount= 0:discount=2} Rs"),
+                buildPriceRow("Discount",
+                    "${radioButton == "1" ? discount = 0 : discount = 2} Rs"),
                 const SizedBox(height: 10),
                 Row(
                   children: [
@@ -142,6 +146,7 @@ class _CustomerCartState extends State<CustomerCart> {
                             "A message will be sent to the customer about the order being completed"),
                       ),
                     );
+                    Navigator.pop(context);
                   },
                   child: Row(
                     children: [
@@ -150,14 +155,17 @@ class _CustomerCartState extends State<CustomerCart> {
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                              SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       Text("${subtotal + deliveryFee - discount} Rs",
                           style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                              SizedBox(width: 200,),
-
+                      SizedBox(
+                        width: 200,
+                      ),
                       const Icon(Icons.send, color: Colors.white),
                     ],
                   ),
