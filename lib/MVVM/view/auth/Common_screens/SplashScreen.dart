@@ -30,7 +30,7 @@ class _SplashscreenState extends State<Splashscreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          Image.asset("asset/Screenshot 2025-03-26 131955.png",fit: BoxFit.cover,)
+          Image.asset("assets/Screenshot 2025-03-26 131955.png",fit: BoxFit.cover,)
         ],),
       ),
     );

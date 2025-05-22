@@ -42,6 +42,7 @@ class _MainpageState extends State<Mainpage>
       ),
       body: Column(
         children: [
+          Align(alignment: Alignment.topLeft, child: CircleAvatar(child: Image(image: AssetImage("assets/dummy profile photo.jpg")),)),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Card(

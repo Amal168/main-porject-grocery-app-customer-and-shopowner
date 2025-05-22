@@ -44,22 +44,21 @@ class _CommonloginState extends State<Commonlogin> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        // width: 225,
-                        // height: 279,
-                        child: Text(
-                          "Welcome \n\n to \n\n List2Local",
-                          style: TextStyle(
-                              fontSize: 36,
-                              fontFamily: "Inknut_Antiqua",
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.normal),
-                          textAlign: TextAlign.center,
+                      SafeArea(
+                        child: Container(
+                          height: 300,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(160),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                  image: AssetImage(
+                                    
+                                      "assets/Screenshot 2025-03-26 131955.png"))),
                         ),
                       ),
                       SizedBox(
-                        height: 85,
+                        height: 70,
                       ),
                       Custometextfield(
                           hinttext: "Email",

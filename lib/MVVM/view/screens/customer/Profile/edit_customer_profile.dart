@@ -34,8 +34,8 @@ class _EditCustomerProfileState extends State<EditCustomerProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          // title: Text("Profile"),
-          // leading: Icon(Icons.keyboard_return),
+          title: Text("Profile"),
+          leading: Icon(Icons.keyboard_return),
           ),
       body: Center(
         child: SingleChildScrollView(
@@ -87,7 +87,7 @@ class _EditCustomerProfileState extends State<EditCustomerProfile> {
                                   fit: BoxFit.cover,
                                   image: _image == null
                                       ? AssetImage(
-                                          "asset/dummy profile photo.jpg")
+                                          "assets/dummy profile photo.jpg")
                                       : FileImage(
                                           _image!,
                                         ),

@@ -3,6 +3,7 @@ import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfi
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/slider.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/Customer_Profile.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/customer_Bottom.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CustomerShopMainPage extends StatefulWidget {
   const CustomerShopMainPage({super.key});
@@ -97,7 +98,14 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (_) => CustomerProfile()));
               },
-              child: CircleAvatar(radius: 25)),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  image: DecorationImage(image: AssetImage("assets/dummy profile photo.jpg"))
+                ),
+              )),
           SizedBox(width: 10),
         ],
       ),
