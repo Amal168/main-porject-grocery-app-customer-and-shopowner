@@ -1,15 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/commonregister.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/forgotpassword.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/customerregister/customerdetails.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/shopownwe/shopownerdetail.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_bottum_bar.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Customer_Shop_Main_Page.dart';
 
 class Commonlogin extends StatefulWidget {
-  const Commonlogin({super.key});
+  Commonlogin({
+    super.key,
+  });
 
   @override
   State<Commonlogin> createState() => _CommonloginState();
@@ -49,11 +55,10 @@ class _CommonloginState extends State<Commonlogin> {
                           height: 300,
                           width: 300,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(160),
+                              shape: BoxShape.circle,
                               image: DecorationImage(
-                                fit: BoxFit.cover,
+                                  fit: BoxFit.cover,
                                   image: AssetImage(
-                                    
                                       "assets/Screenshot 2025-03-26 131955.png"))),
                         ),
                       ),
@@ -123,39 +128,104 @@ class _CommonloginState extends State<Commonlogin> {
                           textcolor: Colors.white,
                           textsize: 20,
                           textweight: FontWeight.bold,
-                          onPressed: () {
-                            //go to the page where email and password are registered
-                            setState(() {
-                              if (formkey.currentState!.validate()) {
-                                if (email.text == dummyshopemail &&
-                                    password.text == dummyshoppass) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => ShopBottumBar()));
-                                } else if (email.text == dummycustomermail &&
-                                    password.text == dummycustomerpass) {
-                                  Navigator.push(
+                          onPressed: () async {
+                            if (formkey.currentState!.validate()) {
+                              final currentUser =
+                                  await Firebaseothservices().signin(
+                                context,
+                                email.text.trim(),
+                                password.text.trim(),
+                              );
+
+                              if (currentUser != null) {
+                                final uid =
+                                    FirebaseAuth.instance.currentUser?.uid;
+
+                                final userDoc = await Firebaseothservices()
+                                    .dbuser
+                                    .collection('users')
+                                    .doc(uid)
+                                    .get();
+
+                                if (userDoc.exists) {
+                                  final role = userDoc.data()?['role'];
+                                  final isCustomerVerified = userDoc.data()?['isCustomerVerified'];
+                                  final isShopVerified = userDoc.data()?['isShopVerified'];
+
+                                  if (role == 'Customer') {
+                                  if(isCustomerVerified==true){
+                                      Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                           builder: (_) =>
-                                              CustomerShopMainPage()));
-                                } else if (email.text.isEmpty &&
-                                    password.text.isEmpty) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                              CustomerShopMainPage()),
+                                    );
+                                  }else{
+                                      Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) =>
+                                              Customerdetails()),
+                                    );
+                                  }
+                                  } else if (role == 'ShopOwner') {
+                                  if(isShopVerified == true){
+                                      Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => ShopBottumBar()),
+                                    );
+                                  }else{
+                                     Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => Shopownerdetail()),
+                                    );
+                                  }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                          elevation: 10,
-                                          backgroundColor: toggle2color,
-                                          shape:
-                                              CircleBorder(eccentricity: 0.9),
-                                          content: Text(
-                                            "Please Enter  Your Email And Password",
-                                            textAlign: TextAlign.center,
-                                          )));
+                                          content: Text("Role not recognized")),
+                                    );
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            "User document does not exist")),
+                                  );
                                 }
                               }
-                              return null;
-                            });
+                            }
+
+                            // if (formkey.currentState!.validate()) {
+                            //   if (email.text == dummyshopemail &&
+                            //       password.text == dummyshoppass) {
+                            //     Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //             builder: (_) => ShopBottumBar()));
+                            //   } else if (email.text == dummycustomermail &&
+                            //       password.text == dummycustomerpass) {
+                            //     Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //             builder: (_) =>
+                            //                 CustomerShopMainPage()));
+                            //   } else if (email.text.isEmpty &&
+                            //       password.text.isEmpty) {
+                            //     ScaffoldMessenger.of(context).showSnackBar(
+                            //         SnackBar(
+                            //             elevation: 10,
+                            //             backgroundColor: toggle2color,
+                            //             shape:
+                            //                 CircleBorder(eccentricity: 0.9),
+                            //             content: Text(
+                            //               "Please Enter  Your Email And Password",
+                            //               textAlign: TextAlign.center,
+                            //             )));
+                            //   }
+                            // }
                           },
                           text: "Login",
                           textstyl: "Inknut_Antiqua",

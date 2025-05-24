@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/customerregister/customerRegister.dart';
@@ -17,6 +16,14 @@ class _CommonregisterState extends State<Commonregister> {
 
   final List<String> _label = ['Customer', 'ShopOwner'];
   List<Color> color = [toggle2color];
+  String selectRole(int selectIndex) {
+    if (selectIndex == 0) {
+      return 'Customer';
+    } else {
+      return 'ShopOwner';
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -29,7 +36,7 @@ class _CommonregisterState extends State<Commonregister> {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage("asset/571332.jpg"),
+              image: AssetImage("assets/571332.jpg"),
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.6), BlendMode.darken))),
@@ -98,7 +105,7 @@ class _CommonregisterState extends State<Commonregister> {
                             onToggle: (index) {
                               setState(() {
                                 selected = index!;
-                                
+
                                 selected == 0
                                     ? color = [toggle2color]
                                     : [Colors.white];
@@ -110,7 +117,11 @@ class _CommonregisterState extends State<Commonregister> {
                         Expanded(
                             child: Column(
                           children: [
-                            selected == 0 ? Customerregister() : Shopregister()
+                            selected == 0
+                                ? Customerregister(
+                                    role: selectRole(selected),
+                                  )
+                                : Shopregister(role: selectRole(selected),)
                           ],
                         ))
                       ],

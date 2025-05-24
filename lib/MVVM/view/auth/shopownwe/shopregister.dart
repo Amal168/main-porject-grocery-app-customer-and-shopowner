@@ -1,13 +1,15 @@
-
 import 'package:flutter/material.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/customerregister/customerdetails.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/shopownwe/shopownerdetail.dart';
 import 'package:provider/provider.dart';
 
 class Shopregister extends StatefulWidget {
-  const Shopregister({super.key});
+  String role;
+  Shopregister({super.key, required this.role});
 
   @override
   State<Shopregister> createState() => _ShopregisterState();
@@ -33,7 +35,7 @@ class _ShopregisterState extends State<Shopregister> {
                 height: 50,
               ),
               Custometextfield(
-                  hinttext: "Customer Email",
+                  hinttext: "Email",
                   validate: (p0) {
                     if (_Email.text.isEmpty) {
                       return "Enter Email Please";
@@ -61,7 +63,7 @@ class _ShopregisterState extends State<Shopregister> {
                   validate: (p0) {
                     if (_Conferm.text.isEmpty) {
                       return "Enter Confrem Your Password Please";
-                    }else  if (_Conferm.text!=_Password.text) {
+                    } else if (_Conferm.text != _Password.text) {
                       return "Enter Confrem Your Password And Conferm Password Please";
                     }
                     return null;
@@ -76,27 +78,37 @@ class _ShopregisterState extends State<Shopregister> {
                   textweight: FontWeight.bold,
                   width: 350,
                   hight: 60,
-                  onPressed: () {
-                    setState(() {
-                     if (formkey.currentState!.validate()) {
-
-                       Navigator.push(
+                  onPressed: () async {
+                    if (formkey.currentState!.validate()) {
+                      final user = await Firebaseothservices().createUser(
+                        context,
+                        _Email.text.trim(),
+                        _Password.text.trim(),
+                        widget.role,
+                      );
+                      if (user != null) {
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => Customerdetails()));
-                      } 
-                      else if (_Conferm.text!=_Password.text) {
-                         ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    elevation: 10,
-                                    backgroundColor: toggle2color,
-                                    shape: CircleBorder(eccentricity: 0.9),
-                                      content:
-                                          Text("Please Check Your Email And Password",textAlign: TextAlign.center,)));
+                                builder: (_) => Shopownerdetail()));
+                      await Firebaseothservices()
+                            .dbuser
+                            .collection('users')
+                            .doc(Firebaseothservices().uid)
+                            .update({
+                              'isShopVerified':false,
+                            });
                       }
-                      
+                    } else if (_Conferm.text != _Password.text) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          elevation: 10,
+                          backgroundColor: toggle2color,
+                          shape: CircleBorder(eccentricity: 0.9),
+                          content: Text(
+                            "Please Check Your Email And Password",
+                            textAlign: TextAlign.center,
+                          )));
                     }
-                    );
                   },
                   text: "Submit",
                   color: WidgetStatePropertyAll(redbutton))

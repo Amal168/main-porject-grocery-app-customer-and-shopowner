@@ -1,9 +1,11 @@
-
 import 'package:flutter/material.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Customer_Shop_Main_Page.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/customer_Bottom.dart';
+
 class Customerdetails extends StatefulWidget {
   const Customerdetails({super.key});
 
@@ -23,7 +25,7 @@ class _CustomerdetailsState extends State<Customerdetails> {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage("asset/571332.jpg"),
+              image: AssetImage("assets/571332.jpg"),
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.6), BlendMode.darken))),
@@ -84,7 +86,7 @@ class _CustomerdetailsState extends State<Customerdetails> {
                               validate: (p0) {
                                 if (phone.text.isEmpty) {
                                   return "Enter Your Phone";
-                                }else if (phone.text.length!=10) {
+                                } else if (phone.text.length != 10) {
                                   return "Check Your Phone";
                                 }
                                 return null;
@@ -140,15 +142,27 @@ class _CustomerdetailsState extends State<Customerdetails> {
                         textweight: FontWeight.bold,
                         width: 350,
                         hight: 60,
-                        onPressed: () {
+                        onPressed: () async {
                           if (formkey.currentState!.validate()) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => CustomerBottom()));
-                          } else if (formkey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("Please Enter All Datas")));
+                            await Firebaseothservices()
+                                .dbuser
+                                .collection('users')
+                                .doc(Firebaseothservices().uid)
+                                .update({
+                              "name": name.text.trim(),
+                              "phone": phone.text.trim(),
+                              "place": place.text.trim(),
+                              "location": location.text.trim(),
+                              "isCustomerVerified": true,
+                            });
+
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomerShopMainPage(),
+                              ),
+                              (route) => false,
+                            );
                           }
                         },
                         text: "Submit",

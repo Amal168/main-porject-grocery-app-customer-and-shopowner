@@ -44,7 +44,7 @@ class Custometextfield extends StatelessWidget {
             
             hintStyle: TextStyle(color: Colors.black38, fontSize: 20),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(sides ?? 30),
+                borderRadius: BorderRadius.circular(sides ?? 15),
                 borderSide: BorderSide(color: Colors.white70))),
       ),
     );

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
@@ -25,7 +26,7 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: AssetImage("asset/571332.jpg"),
+              image: AssetImage("assets/571332.jpg"),
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.6), BlendMode.darken))),
@@ -168,15 +169,29 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
                         textcolor: Colors.white,
                         width: 350,
                         hight: 60,
-                        onPressed: () {
+                        onPressed: ()async {
                          if (formkey.currentState!.validate()) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => ShopBottumBar()));
-                          } else if (formkey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("Please Enter All Datas")));
+                            await Firebaseothservices()
+                                .dbuser
+                                .collection('users')
+                                .doc(Firebaseothservices().uid)
+                                .update({
+                              "name": _name.text.trim(),
+                              "phone": _phone.text.trim(),
+                              "place": _place.text.trim(),
+                              "shopname": _shopname.text.trim(),
+                              "shoptime": _shoptime.text.trim(),
+                              "location": _location.text.trim(),
+                              "isCustomerVerified": true,
+                            });
+
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ShopBottumBar(),
+                              ),
+                              (route) => false,
+                            );
                           }
                         },
                         text: "Submit",

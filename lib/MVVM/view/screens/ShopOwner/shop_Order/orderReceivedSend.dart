@@ -36,11 +36,19 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Card(
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Align(alignment: Alignment.topLeft,child: Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(image: AssetImage("assets/dummy profile photo.jpg"))
+              ),
+            ),),
+            Card(
               color: Colors.green,
               shape:
                   RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -65,16 +73,16 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
                 onToggle: (index) {
                   setState(() {
                     selected = index!;
-      
+                  
                     selected == 0 ? color = [toggle2color] : [Colors.white];
                     // debugPrint('Selected index: $selected');
                   });
                 },
               ),
             ),
-          ),
-          Expanded(child: selected == 0 ? Orderreceved() : Ordersend()),
-        ],
+            Expanded(child: selected == 0 ? Orderreceved() : Ordersend()),
+          ],
+        ),
       ),
     );
   }
