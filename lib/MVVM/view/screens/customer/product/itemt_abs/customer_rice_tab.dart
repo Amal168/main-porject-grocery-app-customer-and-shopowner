@@ -74,100 +74,119 @@ class _CustomerRiceTabState extends State<CustomerRiceTab> {
 
     return Column(
       children: [
-        Card(
-          elevation: 10,
-          child: Container(
-            height: 40,
-            decoration:
-                BoxDecoration(border: Border.all(color: Colors.black26)),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: rice.length,
-              itemBuilder: (context, index) {
-                return TextButton(
-                  onPressed: () {
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 45,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            itemCount: rice.length,
+            itemBuilder: (context, index) {
+              final isSelected = selectedIndex == index;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: ChoiceChip(
+                  label: Text(rice[index]),
+                  selected: isSelected,
+                  selectedColor: toggle2color,
+                  backgroundColor: Colors.grey[200],
+                  labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold),
+                  onSelected: (_) {
                     setState(() {
                       selectedIndex = index;
                     });
                   },
-                  child: Text(
-                    rice[index],
-                    style: TextStyle(
-                      color:
-                          selectedIndex == index ? toggle2color : Colors.black,
-                    ),
-                  ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         ),
+        const SizedBox(height: 10),
         Expanded(
           child: filteredList.isEmpty
-              ? Center(child: Text("No data available"))
+              ? const Center(child: Text("No data available"))
               : GridView.builder(
                   itemCount: filteredList.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  padding: const EdgeInsets.all(10),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 3,
-                    mainAxisExtent: 370,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    mainAxisExtent: 270,
                   ),
                   itemBuilder: (context, index) {
                     final item = filteredList[index];
+                    final isLowStock = item["ShopPrice"] < 5;
+
                     return Container(
-                      margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 10),
-                          Container(
-                            width: 118,
-                            height: 121,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                    "assets/571332.jpg",
-                                  ),
-                                  fit: BoxFit.cover),
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            // Add image here if needed
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            item["ProductName"],
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            "Only ${item["ShopPrice"]} Left",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: item["ShopPrice"] < 5
-                                    ? Colors.red
-                                    : toggle2color),
-                          ),
-                          SizedBox(height: 10),
-                          Text("${item['Weight']} ${item['Rupees']}Rs",
-                              style: TextStyle(fontSize: 15)),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: toggle2color,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              "Select",
-                              style: TextStyle(color: Colors.white),
-                            ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 6,
+                            offset: Offset(2, 4),
                           ),
                         ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 10),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                "assets/571332.jpg",
+                                width: double.infinity,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              item["ProductName"],
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "Only ${item["ShopPrice"]} left",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: isLowStock ? Colors.red : toggle2color,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              "${item['Weight']} • ${item['Rupees']} Rs",
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            // const Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: toggle2color,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                onPressed: () {},
+                                child: const Text("Select"),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+                        ),
                       ),
                     );
                   },

@@ -1,11 +1,10 @@
-
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
 import 'package:image_picker/image_picker.dart';
+
 class Addproduct extends StatefulWidget {
   const Addproduct({super.key});
 
@@ -14,237 +13,215 @@ class Addproduct extends StatefulWidget {
 }
 
 class _AddproductState extends State<Addproduct> {
-  final _Name = TextEditingController();
-  final _price = TextEditingController();
-  final _peace = TextEditingController();
-  final _stack = TextEditingController();
-  String _dropdown1 = "Rice";
-  String _dropdown2 = "Red";
-  String radiogroup = " ";
-
+  final _nameController = TextEditingController();
+  final _priceController = TextEditingController();
+  final _unitController = TextEditingController();
+  final _stockController = TextEditingController();
+  String _category = "Rice";
+  String _type = "Red";
   File? _image;
 
-  Future pickimage(ImageSource source) async {
-    final imagefile = await ImagePicker().pickImage(source: source);
-    if (imagefile != null) {
+  Future pickImage(ImageSource source) async {
+    final imageFile = await ImagePicker().pickImage(source: source);
+    if (imageFile != null) {
       setState(() {
-        _image = File(imagefile.path);
+        _image = File(imageFile.path);
       });
     }
   }
+
+  void _showImagePickerDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Choose Product Photo"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("From Camera"),
+              onTap: () {
+                Navigator.pop(context);
+                pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.image),
+              title: const Text("From Gallery"),
+              onTap: () {
+                Navigator.pop(context);
+                pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 200,
-                height: 200,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                  Container(
-                    width: 133,
-                    height: 133,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(image: _image != null
-                              ? FileImage(_image!)
-                              : const NetworkImage(
-                                  "https://th.bing.com/th/id/OIP.EwG6x9w6RngqsKrPJYxULAHaHa?w=180&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-                                ) as ImageProvider,fit: BoxFit.fill),
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(30)),
-                  ),
-                  Positioned(
-                      right: 0,
-                      bottom: 43,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: IconButton(
-                            style: ButtonStyle(
-                                elevation: WidgetStatePropertyAll(30),
-                                shadowColor:
-                                    WidgetStatePropertyAll(Colors.black26)),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text("Take Products Photo"),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        TextButton(
-                                            onPressed: () {
-                                               Navigator.pop(context);
-                                        pickimage(ImageSource.camera);
-                                            },
-                                            child: Text("From Camera")),
-                                        TextButton(
-                                            onPressed: () {
-                                               Navigator.pop(context);
-                                        pickimage(ImageSource.gallery);
-                                            },
-                                            child: Text("From Device"))
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            icon: Icon(Icons.camera_enhance)),
-                      ))
-                ]),
-              ),
-              Padding(
-                padding: EdgeInsets.all(15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Product Name"),
-                    Container(
-                      height: 49,
-                      child: Custometextfield(
-                          sides: 15,
-                          hinttext: "Product Name",
-                          validate: (p0) {},
-                          textEditingController: _Name),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text("Product Price"),
-                    Container(
-                      height: 49,
-                      child: Custometextfield(
-                          sides: 15,
-                          hinttext: "Price",
-                          validate: (p0) {},
-                          textEditingController: _price),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text("Peace/kg/g"),
-                    Container(
-                      height: 49,
-                      child: Custometextfield(
-                          sides: 15,
-                          hinttext: "Peace/kg/g",
-                          validate: (p0) {},
-                          textEditingController: _peace),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text("Catogary"),
-                    Container(
-                      width: double.infinity,
-                      height: 49,
-                      decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: DropdownButton<String>(
-                          isExpanded: true,
-                          borderRadius: BorderRadius.circular(20),
-                         
-                          value: _dropdown1,
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          items: const [
-                            DropdownMenuItem<String>(
-                                value: "Rice", child: Text("     Rice")),
-                            DropdownMenuItem<String>(
-                                value: "Snacks", child: Text("     Snacks")),
-                            DropdownMenuItem<String>(
-                                value: "toothpast",
-                                child: Text("     toothpast")),
-                            DropdownMenuItem<String>(
-                                value: "Coockoil", child: Text("     Coockoil")),
-                            DropdownMenuItem<String>(
-                                value: "Soap", child: Text("     Soap")),
-                          ],
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _dropdown1 = newValue!;
-                            });
-                          }),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text("Type"),
-                    Container(
-                      width: double.infinity,
-                      height: 49,
-                      decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: DropdownButton<String>(
-                          isExpanded: true,
-                          borderRadius: BorderRadius.circular(20),
-                          // focusColor: Colors.amber,
-                          // dropdownColor: Colors.white,
-                          // iconEnabledColor: Colors.red,
-                          // iconDisabledColor: Colors.orange,
-                          value: _dropdown2,
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          items: const [
-                            DropdownMenuItem<String>(
-                                value: "Red",
-                                child: Text(
-                                  "     Red",
-                                  selectionColor: Colors.red,
-                                )),
-                            DropdownMenuItem<String>(
-                                value: "Green",
-                                child: Text(
-                                  "     Green",
-                                  selectionColor: Colors.green,
-                                )),
-                            DropdownMenuItem<String>(
-                                value: "Blue", child: Text("     Blue"))
-                          ],
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _dropdown2 = newValue!;
-                            });
-                          }),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text("Stock"),
-                    Container(
-                      height: 49,
-                      child: Custometextfield(
-                          sides: 15,
-                          hinttext: "Stock",
-                          validate: (p0) {},
-                          textEditingController: _stack),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    
-                  ],
-                ),
-              ),
-              Customebutton(
-                  hight: 50,
-                  width: 150,
-                  textcolor: Colors.white,
-                  textsize: 18,
-                  onPressed: () {},
-                  text: "Add Product",
-                  color: WidgetStatePropertyAll(toggle2color))
-            ],
+      backgroundColor: const Color(0xFFF8F9FA),
+      appBar: AppBar(
+        elevation: 4,
+        backgroundColor: Colors.white,
+        title: const Text(
+          "Add New Product",
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
+        shadowColor: Colors.black12,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: _showImagePickerDialog,
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 160,
+                        height: 160,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: _image != null
+                                ? FileImage(_image!)
+                                : const NetworkImage(
+                                        "https://th.bing.com/th/id/OIP.EwG6x9w6RngqsKrPJYxULAHaHa")
+                                    as ImageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 15,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 8,
+                        right: 8,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.black54,
+                          child: Icon(Icons.camera_alt, color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 25),
+                _buildLabel("Product Name"),
+                Custometextfield(
+                  sides: 15,
+                  hinttext: "Enter product name",
+                  textEditingController: _nameController,
+                  validate: (value) {},
+                ),
+                const SizedBox(height: 15),
+                _buildLabel("Price"),
+                Custometextfield(
+                  sides: 15,
+                  hinttext: "Enter price",
+                  textEditingController: _priceController,
+                  validate: (value) {},
+                ),
+                const SizedBox(height: 15),
+                _buildLabel("Unit"),
+                Custometextfield(
+                  sides: 15,
+                  hinttext: "kg / g / pcs",
+                  textEditingController: _unitController,
+                  validate: (value) {},
+                ),
+                const SizedBox(height: 15),
+                _buildLabel("Category"),
+                _buildDropdown(_category, ["Rice", "Snacks", "Toothpaste", "Cooking Oil", "Soap"], (val) {
+                  setState(() => _category = val!);
+                }),
+                const SizedBox(height: 15),
+                _buildLabel("Type"),
+                _buildDropdown(_type, ["Red", "Green", "Blue"], (val) {
+                  setState(() => _type = val!);
+                }),
+                const SizedBox(height: 15),
+                _buildLabel("Stock"),
+                Custometextfield(
+                  sides: 15,
+                  hinttext: "Enter stock quantity",
+                  textEditingController: _stockController,
+                  validate: (value) {},
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    // Add your logic
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    elevation: 5,
+                    backgroundColor: Colors.teal,
+                  ),
+                  child: const Text(
+                    "Add Product",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
+    );
+  }
+
+  Widget _buildDropdown(String value, List<String> items, ValueChanged<String?> onChanged) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        border: Border.all(),
+        borderRadius: BorderRadius.circular(15),
+        color: Colors.white,
+      ),
+      child: DropdownButton<String>(
+        isExpanded: true,
+        underline: const SizedBox(),
+        borderRadius: BorderRadius.circular(15),
+        value: value,
+        icon: const Icon(Icons.keyboard_arrow_down),
+        items: items
+            .map((item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text("  $item"),
+                ))
+            .toList(),
+        onChanged: onChanged,
       ),
     );
   }

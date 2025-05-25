@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderReceved.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderSend.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_profile/shopprofile.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class Orderreceivedsend extends StatefulWidget {
@@ -40,18 +41,27 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
-            Align(alignment: Alignment.topLeft,child: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(image: AssetImage("assets/dummy profile photo.jpg"))
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (_) => Shopprofile()));
+              },
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: AssetImage("assets/dummy profile photo.jpg"))),
+                ),
               ),
-            ),),
+            ),
             Card(
               color: Colors.green,
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
               elevation: 5,
               child: ToggleSwitch(
                 initialLabelIndex: selected,
@@ -73,7 +83,7 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
                 onToggle: (index) {
                   setState(() {
                     selected = index!;
-                  
+
                     selected == 0 ? color = [toggle2color] : [Colors.white];
                     // debugPrint('Selected index: $selected');
                   });

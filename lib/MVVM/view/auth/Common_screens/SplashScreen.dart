@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/Commonlogin.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/customerregister/customerdetails.dart';
@@ -28,15 +29,14 @@ class _SplashscreenState extends State<Splashscreen> {
   }
 
   void initTo() async {
-    await Future.delayed(Duration(seconds: 2));
-
+  await Future.delayed(Duration(seconds: 2));
+  try {
     User? user = _auth.currentUser;
 
     if (user == null) {
       Get.off(() => Commonlogin(), transition: Transition.fade);
     } else {
-      DocumentSnapshot userDoc =
-          await _firestore.collection("users").doc(user.uid).get();
+      DocumentSnapshot userDoc = await _firestore.collection("users").doc(user.uid).get();
 
       if (userDoc.exists) {
         final data = userDoc.data() as Map<String, dynamic>;
@@ -45,30 +45,30 @@ class _SplashscreenState extends State<Splashscreen> {
           if (data["isCustomerVerified"] == true) {
             Get.off(() => CustomerShopMainPage(), transition: Transition.fade);
           } else {
-            Get.off(() => Customerdetails(), transition: Transition.fade);
+            Get.off(() => Commonlogin(), transition: Transition.fade);
           }
         } else if (data["role"] == "ShopOwner") {
           if (data["isShopVerified"] == true) {
             Get.off(() => ShopBottumBar(), transition: Transition.fade);
-          }else{
-            Get.off(() => Shopownerdetail(), transition: Transition.fade);
-
+          } else {
+            Get.off(() => Commonlogin(), transition: Transition.fade);
           }
-        } else {
-          // If role is missing, fallback
-          Get.off(() => Commonlogin(), transition: Transition.fade);
-        }
+        } 
       } else {
-        // User document doesn't exist
         Get.off(() => Commonlogin(), transition: Transition.fade);
       }
     }
+  } catch (e) {
+    print("Error during splash navigation: $e");
+    Get.off(() => Commonlogin(), transition: Transition.fade);
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: splashcolor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

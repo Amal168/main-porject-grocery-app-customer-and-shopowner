@@ -1,123 +1,110 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
+
 class CustomerAllTab extends StatefulWidget {
-  CustomerAllTab({super.key});
+  const CustomerAllTab({super.key});
 
   @override
   State<CustomerAllTab> createState() => _CustomerAllTabState();
 }
 
 class _CustomerAllTabState extends State<CustomerAllTab> {
-  String radiobuttion = " ";
-  int selectIndex = 0;
-   Color lowcolor = redbutton;
-  Color highcolor = toglecolor;
-  int count = 6;
-   bool buttonindex=true;
-  void buttoncolor(index) {
-   setState(() {
-      buttonindex = index!;
-   });
-  }
-
+  int selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: GridView.builder(
-              itemCount: 5,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 2,
-                  mainAxisSpacing: 3,
-                  mainAxisExtent: 370),
-              itemBuilder: (context, index) {
-                switch (selectIndex) {
-                  case 0:
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(15)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            width: 118,
-                            height: 121,
-                            // child: Image.asset("asset/images (1).jpg",fit: BoxFit.cover,),
-                            decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(30)),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "Product Name",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Only ",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: count < 4 ? lowcolor : highcolor)),
-                              Text("${count} ",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: count < 4 ? lowcolor : highcolor)),
-                              Text("Left",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: count < 4 ? lowcolor : highcolor)),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text("100g 20Rs", style: TextStyle(fontSize: 15)),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: WidgetStatePropertyAll(
-                                    buttonindex == 0
-                                        ? Colors.white
-                                        : toggle2color)),
-                            onPressed: () {},
-                            child: Text(
-                              "Selet",
-                              style: TextStyle(
-                                  color: buttonindex == 0
-                                      ? Colors.black
-                                      : Colors.white),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  case 1:
-                    return Center(
-                      child: Text("No data"),
-                    );
-                }
-              },
-            ),
+      backgroundColor: Colors.grey[100],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView.builder(
+          itemCount: 5,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 15,
+            crossAxisSpacing: 15,
+            mainAxisExtent: 270,
           ),
-        ],
+          itemBuilder: (context, index) {
+            int stock = 6 - index; // sample stock logic
+            bool isLowStock = stock < 4;
+            bool isSelected = selectedIndex == index;
+
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                    offset: Offset(2, 4),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.asset(
+                        'assets/package .jpg',
+                        width: double.infinity,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      "Product Name",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      "Only $stock Left",
+                      style: TextStyle(
+                        color: isLowStock ? redbutton : toglecolor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      "100g - 20Rs",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    // const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isSelected ? toggle2color : Colors.white,
+                          foregroundColor: isSelected ? Colors.white : Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(color: toggle2color),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
+                        child: Text(isSelected ? "Selected" : "Select"),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

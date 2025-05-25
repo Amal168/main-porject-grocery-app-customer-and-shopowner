@@ -1,114 +1,163 @@
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/profile_buttons.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/text_display_cards.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/Commonlogin.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/Common_Screen/CommonCommentRating.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/Customer_Profile.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/edit_customer_profile.dart';
+
 class ShopCustomerProfile extends StatefulWidget {
   const ShopCustomerProfile({super.key});
 
   @override
-  State<ShopCustomerProfile> createState() => _ShopCustomerProfileState();
+  State<ShopCustomerProfile> createState() => _CustomerProfileState();
 }
 
-class _ShopCustomerProfileState extends State<ShopCustomerProfile> {
+class _CustomerProfileState extends State<ShopCustomerProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false,),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // SizedBox(height: 10,),
-              Card(
-                color: Colors.white,
-                elevation: 10,
-                child: Container(
-                  width: 393,
-                  height: 246,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: photocolor,
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text("Customer Profile",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        backgroundColor: toggle2color,
+        elevation: 0,
+      ),
+      body: FutureBuilder(
+          future: FirebaseFirestore.instance
+              .collection('users')
+              .doc(Firebaseothservices().uid)
+              .get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            final data = snapshot.data!.data();
+
+            if (data == null) {
+              return Center(
+                child: Text('No user data'),
+              );
+            }
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Profile Card
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        colors: [toggle2color.withOpacity(0.9), toggle2color],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(15),
-                          bottomRight: Radius.circular(15))),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        )
+                      ],
+                    ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        Stack(
+                          alignment: Alignment.topRight,
                           children: [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            CircleAvatar(
-                              radius: 62.5,
-                              backgroundColor: photocolor,
-                              child: Icon(
-                                Icons.person,
-                                size: 94,
+                            Align(
+                              alignment: Alignment.center,
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 55,
+                                    backgroundImage: AssetImage(
+                                        "assets/dummy profile photo.jpg"),
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    "Customer Name",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              "Customer",
-                              style: TextStyle(fontSize: 41),
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.white70),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => EditCustomerProfile()));
+                              },
                             )
                           ],
                         ),
-                        
                       ],
                     ),
                   ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              TextDisplayCards(
-                  text: "Mobile Number", cardhight: 60, cardwidth: 360),
-              SizedBox(
-                height: 10,
-              ),
-              
-              SizedBox(
-                height: 10,
-              ),
-              TextDisplayCards(text: "Place", cardhight: 60, cardwidth: 360),
-              SizedBox(
-                height: 10,
-              ),
-              TextDisplayCards(text: "Email", cardhight: 60, cardwidth: 360),
-              SizedBox(
-                height: 10,
-              ),
-              TextDisplayCards(
-                  text: "Location", cardhight: 159, cardwidth: 360),
-              SizedBox(
-                height: 81,
-              ),
-              ProfileButtons(
-                width: 360,
-                hieght: 60,
-                iconph: Icon(Icons.arrow_back_ios_new),
-                text: "Back",
-                ontap: () {
-                  Navigator.pop(context);
-                },
-              ),
-              
-            ],
-          ),
-        ),
-      ),
 
+                  // Info Section
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            offset: Offset(0, 4))
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        InfoTile(label: "Mobile Number", value: "1234567890"),
+                        Divider(),
+                        InfoTile(label: "Place", value: "Your City"),
+                        Divider(),
+                        InfoTile(label: "Email", value: "Customer@gmail.com"),
+                        Divider(),
+                        InfoTile(
+                            label: "Location", value: "Street XYZ, Area ABC"),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  ButtonTile(
+                    icon: Icons.arrow_back_ios_new_outlined,
+                    label: "Back",
+                    color: Colors.redAccent,
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => Commonlogin()));
+                    },
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
+            );
+          }),
     );
   }
 }
+
+
+// Button row widget

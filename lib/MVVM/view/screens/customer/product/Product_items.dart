@@ -7,7 +7,6 @@ import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/produ
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/itemt_abs/customer_rice_tab.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/itemt_abs/customer_snacks_tab.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/itemt_abs/customer_toothpaste_tab.dart';
-
 import 'itemt_abs/customer_Soap_tab.dart';
 
 class ProductItems extends StatefulWidget {
@@ -20,6 +19,7 @@ class ProductItems extends StatefulWidget {
 class _ProductItemsState extends State<ProductItems>
     with SingleTickerProviderStateMixin {
   late TabController tabcontrol;
+  final search = TextEditingController();
 
   @override
   void initState() {
@@ -33,175 +33,125 @@ class _ProductItemsState extends State<ProductItems>
     super.dispose();
   }
 
-  final search = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: toggle2color,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Container(
-            // width: 250,
-            height: 35,
-            child: TextFormField(
-              cursorHeight: 15,
-              mouseCursor: MouseCursor.uncontrolled,
-              validator: (value) {
-                showSearch(context: context, delegate: Customesearch() );
-              },
-              controller: search,
-              decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15))),
+        elevation: 8,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
+        title: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: TextFormField(
+            controller: search,
+            onTap: () => showSearch(context: context, delegate: Customesearch()),
+            decoration: const InputDecoration(
+              prefixIcon: Icon(Icons.search, color: Colors.grey),
+              hintText: 'Search products...',
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(vertical: 10),
             ),
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(100)),
-              child: IconButton(
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.white)),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => ShopCustomerChat()));
-                  },
-                  icon: Icon(
-                    Icons.chat_sharp,
-                    weight: 50,
-                  )),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(100)),
-              child: IconButton(
-                  style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.white)),
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => CustomerCart()));
-                  },
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    weight: 50,
-                  )),
-            ),
-          )
+          _iconButton(icon: Icons.chat_sharp, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ShopCustomerChat()))),
+          _iconButton(icon: Icons.shopping_cart, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CustomerCart()))),
         ],
         bottom: TabBar(
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white,
-            indicatorColor: Colors.white,
-            indicatorWeight: 5,
-            isScrollable: true,
-            controller: tabcontrol,
-            tabs: [
-              Tab(
-                text: "all",
-              ),
-              Tab(
-                text: "Rice",
-              ),
-              Tab(
-                text: "Soap",
-              ),
-              Tab(
-                text: "Snacks",
-              ),
-              Tab(
-                text: "Toothpaste",
-              ),
-              Tab(
-                text: "Cooking Oil",
-              ),
-            ]),
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
+          indicatorWeight: 3,
+          isScrollable: true,
+          controller: tabcontrol,
+          tabs: const [
+            Tab(text: "All"),
+            Tab(text: "Rice"),
+            Tab(text: "Soap"),
+            Tab(text: "Snacks"),
+            Tab(text: "Toothpaste"),
+            Tab(text: "Cooking Oil"),
+          ],
+        ),
       ),
-      body: Expanded(
-        child: TabBarView(controller: tabcontrol, children: [
-          //  AllTabPage(),
-          // Center(
-          //   child: Text("All"),
-          // ),
-          // Center(child: Text("Rice"),),
+      body: TabBarView(
+        controller: tabcontrol,
+        children:  [
           CustomerAllTab(),
           CustomerRiceTab(),
           CustomerSoapTab(),
           CustomerSnacksTab(),
           CustomerToothpasteTab(),
-          CustomerCookingoilTab()
-        ]),
+          CustomerCookingoilTab(),
+        ],
+      ),
+    );
+  }
+
+  Widget _iconButton({required IconData icon, required VoidCallback onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: CircleAvatar(
+        backgroundColor: Colors.white,
+        child: IconButton(
+          icon: Icon(icon, color: toggle2color),
+          onPressed: onTap,
+        ),
       ),
     );
   }
 }
 
-class Customesearch extends SearchDelegate{
-  List<String> searchterms=["Matta","Soup","Coocking Oil","Biriyani Rice"];
+class Customesearch extends SearchDelegate {
+  List<String> searchterms = ["Matta", "Soup", "Cooking Oil", "Biriyani Rice"];
+
   @override
   List<Widget>? buildActions(BuildContext context) {
-    // TODO: implement buildActions
-     return[
-      IconButton(onPressed: () {
-        query=' ';
-      }, icon: Icon(Icons.search))
+    return [
+      IconButton(
+        onPressed: () => query = '',
+        icon: const Icon(Icons.clear),
+      ),
     ];
   }
-  
+
   @override
   Widget? buildLeading(BuildContext context) {
-    // TODO: implement buildLeading
-return IconButton(onPressed: () {
-      close(context, null);
-    }, icon: Icon(Icons.arrow_back));  }
-  
+    return IconButton(
+      onPressed: () => close(context, null),
+      icon: const Icon(Icons.arrow_back),
+    );
+  }
+
   @override
   Widget buildResults(BuildContext context) {
-    // TODO: implement buildResults
- List<String> matchQury=[];
-    for(String fruit in searchterms){
-      if(fruit.toLowerCase().contains(query.toLowerCase())){
-        matchQury.add(fruit);
-      }
-    }
+    final matchQuery = searchterms
+        .where((term) => term.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
     return ListView.builder(
-      itemCount: matchQury.length,
-      itemBuilder: (context, index) {
-        var result=matchQury[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },);  }
-  
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) => ListTile(title: Text(matchQuery[index])),
+    );
+  }
+
   @override
   Widget buildSuggestions(BuildContext context) {
-    // TODO: implement buildSuggestions
- List<String> matchQury=[];
-    for(var fruit in searchterms){
-      if(fruit.toLowerCase().contains(query.toLowerCase())){
-        matchQury.add(fruit);
-      }
-    }
+    final matchQuery = searchterms
+        .where((term) => term.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
     return ListView.builder(
-      itemCount: matchQury.length,
-      itemBuilder: (context, index) {
-        var result=matchQury[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },);  }
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) => ListTile(title: Text(matchQuery[index])),
+    );
+  }
 }

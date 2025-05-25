@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 
 class CustomerCart extends StatefulWidget {
@@ -10,170 +9,238 @@ class CustomerCart extends StatefulWidget {
 }
 
 class _CustomerCartState extends State<CustomerCart> {
-  List<int> itemCounts = List.generate(3, (index) => 1);
-  String? radioButton = "1";
-  int deliveryFee = 0;
-  late int discount;
+  List<int> itemCounts = List.generate(4, (index) => 1);
+  String radioButton = "1"; 
+  final int discount = 0;
 
   int get subtotal => itemCounts.fold(0, (sum, count) => sum + (count * 20));
+  int get deliveryfee => radioButton == "1" ? 0 : 2;
+  int get total => subtotal + deliveryfee - discount;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.keyboard_return),
         ),
-        title: const Text("List",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "Your Cart",
+          style: TextStyle(
+              fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 1.1),
+        ),
         centerTitle: true,
+        elevation: 6,
+        backgroundColor: toggle2color,
+        shadowColor: Colors.black54,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: ListView.separated(
+          physics: const ClampingScrollPhysics(),
           itemCount: itemCounts.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 20),
           itemBuilder: (context, index) {
-            return ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  "assets/images.jpg",
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    width: 80,
-                    height: 80,
-                    color: Colors.grey.shade300,
-                    child: Icon(Icons.image_not_supported,
-                        color: Colors.grey.shade600),
-                  ),
-                ),
-              ),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Product Name",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
-                      const Text("1 Piece"),
-                      Text("${itemCounts[index] * 20} Rs"),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          // itemCounts[index].
-                        },
-                        icon: Icon(Icons.close),
+            return Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              shadowColor: Colors.black26,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image.asset(
+                      "assets/images.jpg",
+                      width: 90,
+                      height: 90,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 90,
+                        height: 90,
+                        color: Colors.grey.shade300,
+                        child: Icon(Icons.image_not_supported,
+                            color: Colors.grey.shade600, size: 40),
                       ),
-                      Row(
+                    ),
+                  ),
+                  title: Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              setState(() {
-                                if (itemCounts[index] > 1) itemCounts[index]--;
-                              });
-                            },
-                            icon: const Icon(Icons.remove, size: 30),
+                          Text(
+                            "Product Name",
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey.shade800),
                           ),
-                          Text("${itemCounts[index]}",
-                              style: const TextStyle(fontSize: 16)),
-                          IconButton(
-                            onPressed: () {
+                          const SizedBox(height: 6),
+                          Text(
+                            "1 Piece",
+                            style: TextStyle(
+                                fontSize: 14, color: Colors.grey.shade600),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            "${itemCounts[index] * 20} Rs",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: toggle2color),
+                          ),
+                          
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
                               setState(() {
-                                itemCounts[index]++;
+                                itemCounts.removeAt(index);
                               });
                             },
-                            icon: const Icon(Icons.add_box, size: 30),
+                            borderRadius: BorderRadius.circular(50),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade400,
+                                shape: BoxShape.circle,
+                              ),
+                              padding: const EdgeInsets.all(6),
+                              child: const Icon(Icons.close, color: Colors.white),
+                            ),
+                          ),
+                          SizedBox(height: 30,),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    if (itemCounts[index] > 1) {
+                                      itemCounts[index]--;
+                                    }
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade300,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(Icons.remove, size: 28),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 14.0),
+                                child: Text("${itemCounts[index]}",
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 0.8)),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    itemCounts[index]++;
+                                  });
+                                },
+                                borderRadius: BorderRadius.circular(8),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: toggle2color,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(Icons.add_box,
+                                      size: 28, color: Colors.white),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
             );
           },
-          separatorBuilder: (context, index) => const Divider(),
         ),
       ),
-      bottomSheet: SingleChildScrollView(
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(
-            border: Border.all(),
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+      bottomSheet: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 12,
+              spreadRadius: 4,
+            )
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildPriceRow("Subtotal", "$subtotal Rs"),
+            buildPriceRow("Delivery Fee", "$deliveryfee Rs"),
+            buildPriceRow("Discount", "$discount Rs"),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                buildPriceRow("Subtotal", "${subtotal} Rs"),
-                buildPriceRow("Delivery Fee", "$deliveryFee Rs"),
-                buildPriceRow("Discount",
-                    "${radioButton == "1" ? discount = 0 : discount = 2} Rs"),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    buildRadioButton("Pickup", "1"),
-                    buildRadioButton("Delivery", "2"),
-                  ],
-                ),
-                MaterialButton(
-                  elevation: 10.0,
-                  minWidth: double.infinity,
-                  height: 40,
-                  color: toggle2color,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                            "A message will be sent to the customer about the order being completed"),
-                      ),
-                    );
-                    Navigator.pop(context);
-                  },
-                  child: Row(
-                    children: [
-                      const Text("Total:",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("${subtotal + deliveryFee - discount} Rs",
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      SizedBox(
-                        width: 200,
-                      ),
-                      const Icon(Icons.send, color: Colors.white),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
+                buildRadioButton("Pickup", "1"),
+                const SizedBox(width: 40),
+                buildRadioButton("Delivery", "2"),
               ],
             ),
-          ),
+            const SizedBox(height: 20),
+            MaterialButton(
+              elevation: 12.0,
+              minWidth: double.infinity,
+              height: 50,
+              color: toggle2color,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                        "A message will be sent to the customer about the order being completed"),
+                  ),
+                );
+                Navigator.pop(context);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Total:",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                  const SizedBox(width: 12),
+                  Text("$total Rs",
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                  const SizedBox(width: 12),
+                  const Icon(Icons.send, color: Colors.white, size: 22),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -181,16 +248,20 @@ class _CustomerCartState extends State<CustomerCart> {
 
   Widget buildPriceRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label,
               style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
                   fontFamily: "Inknut_Antiqua")),
-          Text(value, style: const TextStyle(fontSize: 15)),
+          Text(value,
+              style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                  color: toggle2color)),
         ],
       ),
     );
@@ -200,16 +271,17 @@ class _CustomerCartState extends State<CustomerCart> {
     return Row(
       children: [
         Radio<String>(
+          activeColor: toggle2color,
           value: value,
           groupValue: radioButton,
           onChanged: (newValue) {
             setState(() {
-              radioButton = newValue;
+              radioButton = newValue!;
             });
           },
         ),
         Text(title,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       ],
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/text_edit_crad.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/Customer_Profile.dart';
@@ -34,9 +35,15 @@ class _EditCustomerProfileState extends State<EditCustomerProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Profile"),
-          leading: Icon(Icons.keyboard_return),
-          ),
+        backgroundColor: toggle2color,
+        centerTitle: true,
+        title: Text("Profile"),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.keyboard_return)),
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(

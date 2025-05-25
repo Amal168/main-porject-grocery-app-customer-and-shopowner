@@ -13,4 +13,4 @@ const Color chatbackground = Color.fromRGBO(204, 251, 202, 1);
 const Color listbutton = Color.fromRGBO(247, 198, 4, 1);
 const Color button1 = Color.fromRGBO(230, 204, 102, 1);
 const Color button2 = Color.fromRGBO(214, 93, 93, 1);
-// const Color chatbackground = Color.fromRGBO(22, 255, 5, 1);
+const Color splashcolor = Color.fromRGBO(253, 253, 243, 1);
