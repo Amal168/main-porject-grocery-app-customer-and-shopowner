@@ -1,56 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderReceavedList.dart';
-class Orderreceved extends StatefulWidget {
+
+class Orderreceved extends StatelessWidget {
   const Orderreceved({super.key});
 
-  @override
-  State<Orderreceved> createState() => _OrderrecevedState();
-}
+  final List<String> received = const ["Sithara", "Arjune", "Pokiry", "Vishal", "Sehal"];
 
-class _OrderrecevedState extends State<Orderreceved> {
-  List Recive = [
-    "Sithara",
-    "Arjune",
-    "Pokiry",
-    "vishal",
-    "Sehal"
-  ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: Recive.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => Orderreceavedlist()));
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 10,
-                        child: ListTile(
-                          leading: CircleAvatar(),
-                          title: Text(Recive[index]),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              )
-            ],
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: received.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () => Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const Orderreceavedlist())),
+          child: Card(
+            elevation: 6,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              leading: const CircleAvatar(
+                backgroundColor: Colors.blueGrey,
+                child: Icon(Icons.person, color: Colors.white),
+              ),
+              title: Text(
+                received[index],
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

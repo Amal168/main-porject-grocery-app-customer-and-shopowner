@@ -1,6 +1,7 @@
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase auth import
 import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
@@ -24,90 +25,149 @@ class _CommonloginState extends State<Commonlogin> {
   final password = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> loginUser() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        await Firebaseothservices().signin(
+          context,
+          email.text.trim(),
+          password.text.trim(),
+        );
+        // Navigate to home or dashboard
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Login successful")),
+        );
+      } on FirebaseAuthException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? "Login failed")),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage("assets/571332.jpg"),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.6),
-            BlendMode.darken,
-          ),
         ),
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SafeArea(
-                    child: Container(
-                      height: 300,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage("assets/Screenshot 2025-03-26 131955.png"),
+      child: Stack(
+        children: [
+          // Dark overlay shade
+          Container(
+            color: Colors.black.withOpacity(0.4),
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        // App Logo
+                        Container(
+                          height: 160,
+                          width: 160,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(color: Colors.black26, blurRadius: 12),
+                            ],
+                          ),
+                          child: ClipOval(
+                            child: Image.asset(
+                              "assets/Screenshot 2025-03-26 131955.png",
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 70),
-                  Custometextfield(
-                    hinttext: "Email",
-                    textEditingController: email,
-                    validate: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter your email";
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 10),
-                  Custometextfield(
-                    hinttext: "Password",
-                    textEditingController: password,
-                    validate: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter your password";
-                      }
-                      return null;
-                    },
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => Forgotpassword()));
-                      },
-                      child: Text(
-                        "Forgot password",
-                        style: TextStyle(
-                          fontFamily: "Inknut_Antiqua",
-                          color: bluetext,
-                          fontSize: 20,
+                        const SizedBox(height: 30),
+
+                        Text(
+                          "Welcome Back",
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.2,
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  Customebutton(
-                    width: 350,
-                    hight: 60,
-                    textcolor: Colors.white,
-                    textsize: 20,
-                    textweight: FontWeight.bold,
-                    text: "Login",
-                    textstyl: "Inknut_Antiqua",
-                    color: WidgetStatePropertyAll(redbutton),
-                    onPressed: () async {
+                        const SizedBox(height: 6),
+                        const Text(
+                          "Login to continue",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+
+                        Custometextfield(
+                          hinttext: "Email",
+                          textEditingController: email,
+                          validate: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your email";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+
+                        Custometextfield(
+                          hinttext: "Password",
+                          textEditingController: password,
+                          validate: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Please enter your password";
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const Forgotpassword()),
+                              );
+                            },
+                            child: const Text(
+                              "Forgot Password?",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.blueAccent,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+
+                        Customebutton(
+                          width: double.infinity,
+                          hight: 55,
+                          textcolor: Colors.white,
+                          textsize: 18,
+                          textweight: FontWeight.w600,
+                          text: "Login",
+                          textstyl: "Inknut_Antiqua",
+                          color: WidgetStatePropertyAll(toggle3color),
+                          onPressed: 
+                             () async {
                       if (formKey.currentState!.validate()) {
                         try {
                           final currentUser = await Firebaseothservices().signin(
@@ -166,50 +226,54 @@ class _CommonloginState extends State<Commonlogin> {
                       }
                     },
                   ),
-                  SizedBox(height: 58),
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
-                    child: Image(
-                      image: AssetImage("assets/google-icon-logo-symbol-free-png.webp"),
+                          
+                        const SizedBox(height: 24),
+
+                        Row(
+                          children: const [
+                            Expanded(child: Divider(thickness: 1, color: Colors.white24)),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              child: Text("OR", style: TextStyle(color: Colors.white70)),
+                            ),
+                            Expanded(child: Divider(thickness: 1, color: Colors.white24)),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Don't have an account?",
+                              style: TextStyle(color: Colors.white, fontSize: 15),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const Commonregister()),
+                                );
+                              },
+                              child: const Text(
+                                "Register now",
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                      ],
                     ),
                   ),
-                  SizedBox(height: 18),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have account ?",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontFamily: "Inknut_Antiqua",
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => Commonregister()),
-                          );
-                        },
-                        child: Text(
-                          "Register now",
-                          style: TextStyle(
-                            color: bluetext,
-                            fontSize: 15,
-                            fontFamily: "Inknut_Antiqua",
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          )
+        ],
       ),
     );
   }

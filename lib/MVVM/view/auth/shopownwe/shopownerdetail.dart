@@ -1,10 +1,11 @@
-
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauthservices.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_bottum_bar.dart';
+
 class Shopownerdetail extends StatefulWidget {
   const Shopownerdetail({super.key});
 
@@ -21,186 +22,162 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
   final _place = TextEditingController();
   final _location = TextEditingController();
   final formkey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage("assets/571332.jpg"),
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.6), BlendMode.darken))),
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/571332.jpg"),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(Icons.keyboard_return),
-              iconSize: 35,
-            ),
-            backgroundColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
           backgroundColor: Colors.transparent,
-          body: Form(
-            key: formkey,
-            child: Center(
-              child: SingleChildScrollView(
-                physics: ScrollPhysics(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 150,
-                      height: 91,
-                      child: Text(
-                        "Details",
-                        style: TextStyle(
-                            fontSize: 46,
-                            color: Colors.white,
+          elevation: 0,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                child: Container(
+                  width: 380,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(color: Colors.white24),
+                  ),
+                  child: Form(
+                    key: formkey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Shop Details",
+                          style: TextStyle(
+                            fontSize: 36,
                             fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.normal),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 54,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Column(
-                        children: [
-                          Custometextfield(
-                              hinttext: "Name",
-                              validate: (p0) {
-                                if (_name.text.isEmpty) {
-                                  return "Enter your Name";
-                                }
-                                return null;
-                              },
-                              textEditingController: _name),
-                          SizedBox(
-                            height: 10,
+                            color: Colors.white,
+                            letterSpacing: 1.2,
                           ),
-                          Custometextfield(
-                              hinttext: "ShopName",
-                              validate: (p0) {
-                                if (_shopname.text.isEmpty) {
-                                  return "Enter your Shopname";
-                                }
-                                return null;
-                              },
-                              textEditingController: _shopname),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Custometextfield(
-                              keyboard: TextInputType.number,
-                              hinttext: "Phone",
-                              validate: (p0) {
-                                if (_phone.text.isEmpty) {
-                                  return "Enter your Phone";
-                                }else  if (_phone.text.length!=10) {
-                                  return "Check your Phone";
-                                }
-                                return null;
-                              },
-                              textEditingController: _phone),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Custometextfield(
-                              hinttext: "Email",
-                              validate: (p0) {
-                                if (_email.text.isEmpty) {
-                                  return "Enter your Email";
-                                }
-                                return null;
-                              },
-                              textEditingController: _email),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Custometextfield(
-                              keyboard: TextInputType.numberWithOptions(),
-                              hinttext: "Shoptime",
-                              validate: (p0) {
-                                if (_shoptime.text.isEmpty) {
-                                  return "Enter your Time";
-                                }
-                                return null;
-                              },
-                              textEditingController: _shoptime),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Custometextfield(
-                              hinttext: "Place",
-                              validate: (p0) {
-                                if (_place.text.isEmpty) {
-                                  return "Enter your Place";
-                                }
-                                return null;
-                              },
-                              textEditingController: _place),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Custometextfield(
-                            hinttext: "Location",
-                            validate: (p0) {
-                              if (_location.text.isEmpty) {
-                                return "Enter your Location";
-                              }
-                              return null;
-                            },
-                            textEditingController: _location,
-                            length: 5,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Customebutton(
-                        textsize: 20,
-                        textweight: FontWeight.bold,
-                        textcolor: Colors.white,
-                        width: 350,
-                        hight: 60,
-                        onPressed: ()async {
-                         if (formkey.currentState!.validate()) {
-                            await Firebaseothservices()
-                                .dbuser
-                                .collection('users')
-                                .doc(Firebaseothservices().uid)
-                                .update({
-                              "name": _name.text.trim(),
-                              "phone": _phone.text.trim(),
-                              "place": _place.text.trim(),
-                              "shopname": _shopname.text.trim(),
-                              "shoptime": _shoptime.text.trim(),
-                              "location": _location.text.trim(),
-                              "isCustomerVerified": true,
-                            });
+                        ),
+                        const SizedBox(height: 30),
 
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ShopBottumBar(),
-                              ),
-                              (route) => false,
-                            );
-                          }
-                        },
-                        text: "Submit",
-                        color: WidgetStatePropertyAll(redbutton))
-                  ],
+                        Custometextfield(
+                          hinttext: "Full Name",
+                          textEditingController: _name,
+                          validate: (value) =>
+                              value!.isEmpty ? "Enter your name" : null,
+                        ),
+                        const SizedBox(height: 12),
+
+                        Custometextfield(
+                          hinttext: "Shop Name",
+                          textEditingController: _shopname,
+                          validate: (value) =>
+                              value!.isEmpty ? "Enter your shop name" : null,
+                        ),
+                        const SizedBox(height: 12),
+
+                        Custometextfield(
+                          keyboard: TextInputType.number,
+                          hinttext: "Phone Number",
+                          textEditingController: _phone,
+                          validate: (value) {
+                            if (value!.isEmpty) return "Enter your phone";
+                            if (value.length != 10) return "Enter a valid phone";
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 12),
+
+                        Custometextfield(
+                          hinttext: "Email Address",
+                          textEditingController: _email,
+                          validate: (value) =>
+                              value!.isEmpty ? "Enter your email" : null,
+                        ),
+                        const SizedBox(height: 12),
+
+                        Custometextfield(
+                          keyboard: TextInputType.text,
+                          hinttext: "Shop Timings (e.g. 9am to 9pm)",
+                          textEditingController: _shoptime,
+                          validate: (value) =>
+                              value!.isEmpty ? "Enter your shop time" : null,
+                        ),
+                        const SizedBox(height: 12),
+
+                        Custometextfield(
+                          hinttext: "Place",
+                          textEditingController: _place,
+                          validate: (value) =>
+                              value!.isEmpty ? "Enter your place" : null,
+                        ),
+                        const SizedBox(height: 12),
+
+                        Custometextfield(
+                          hinttext: "Location",
+                          textEditingController: _location,
+                          length: 5,
+                          validate: (value) =>
+                              value!.isEmpty ? "Enter your location" : null,
+                        ),
+                        const SizedBox(height: 30),
+
+                        Customebutton(
+                          text: "Submit",
+                          textcolor: Colors.white,
+                          textsize: 18,
+                          textweight: FontWeight.bold,
+                          width: 320,
+                          hight: 55,
+                          color: WidgetStatePropertyAll(redbutton),
+                          onPressed: () async {
+                            if (formkey.currentState!.validate()) {
+                              await Firebaseothservices()
+                                  .dbuser
+                                  .collection('users')
+                                  .doc(Firebaseothservices().uid)
+                                  .update({
+                                "name": _name.text.trim(),
+                                "phone": _phone.text.trim(),
+                                "place": _place.text.trim(),
+                                "shopname": _shopname.text.trim(),
+                                "shoptime": _shoptime.text.trim(),
+                                "location": _location.text.trim(),
+                                "isShopVerified": true,
+
+                              });
+
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ShopBottumBar(),
+                                ),
+                                (route) => false,
+                              );
+                            }
+                          },
+                        )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
@@ -82,7 +84,8 @@ class _AddproductState extends State<Addproduct> {
         padding: const EdgeInsets.all(16),
         child: Card(
           elevation: 8,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
             child: Column(
@@ -151,7 +154,13 @@ class _AddproductState extends State<Addproduct> {
                 ),
                 const SizedBox(height: 15),
                 _buildLabel("Category"),
-                _buildDropdown(_category, ["Rice", "Snacks", "Toothpaste", "Cooking Oil", "Soap"], (val) {
+                _buildDropdown(_category, [
+                  "Rice",
+                  "Snacks",
+                  "Toothpaste",
+                  "Cooking Oil",
+                  "Soap"
+                ], (val) {
                   setState(() => _category = val!);
                 }),
                 const SizedBox(height: 15),
@@ -162,6 +171,7 @@ class _AddproductState extends State<Addproduct> {
                 const SizedBox(height: 15),
                 _buildLabel("Stock"),
                 Custometextfield(
+                  keyboard: TextInputType.number,
                   sides: 15,
                   hinttext: "Enter stock quantity",
                   textEditingController: _stockController,
@@ -169,18 +179,39 @@ class _AddproductState extends State<Addproduct> {
                 ),
                 const SizedBox(height: 30),
                 ElevatedButton(
-                  onPressed: () {
-                    // Add your logic
+                  onPressed: () async {
+                    final uid = await FirebaseFirestore.instance
+                        .collection('products')
+                        .doc()
+                        .id;
+                    await FirebaseFirestore.instance
+                        .collection('products')
+                        .doc(uid)
+                        .set({
+                      "product_id": uid,
+                      "product_name": _nameController.text.trim(),
+                      "product_price": _priceController.text.trim(),
+                      "unit": _unitController.text.trim(),
+                      "Category": _category.toString(),
+                      "type": _type.toString(),
+                      "stock": _stockController.text.trim()
+                    });
+                    Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
                     elevation: 5,
                     backgroundColor: Colors.teal,
                   ),
                   child: const Text(
                     "Add Product",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
               ],
@@ -201,7 +232,8 @@ class _AddproductState extends State<Addproduct> {
     );
   }
 
-  Widget _buildDropdown(String value, List<String> items, ValueChanged<String?> onChanged) {
+  Widget _buildDropdown(
+      String value, List<String> items, ValueChanged<String?> onChanged) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(

@@ -1,48 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderSendList.dart';
-class Ordersend extends StatefulWidget {
+
+class Ordersend extends StatelessWidget {
   const Ordersend({super.key});
 
-  @override
-  State<Ordersend> createState() => _OrdersendState();
-}
+  final List<String> sent = const ["Macha", "Soman", "Michal", "Farise", "Famie"];
 
-class _OrdersendState extends State<Ordersend> {
-  List send = ["Macha","Soman","MIchal","Farise","Famie"];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: send.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => Ordersendlist()));
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 10,
-                        child: ListTile(
-                          leading: CircleAvatar(),
-                          title: Text(send[index]),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              )
-            ],
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: sent.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () => Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const Ordersendlist())),
+          child: Card(
+            elevation: 6,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              leading: const CircleAvatar(
+                backgroundColor: Colors.deepOrange,
+                child: Icon(Icons.person, color: Colors.white),
+              ),
+              title: Text(
+                sent[index],
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 18),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

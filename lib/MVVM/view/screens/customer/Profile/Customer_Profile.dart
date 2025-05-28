@@ -19,7 +19,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: const Text("My Profile",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -85,7 +85,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
                                   ),
                                   SizedBox(height: 10),
                                   Text(
-                                    "Customer Name",
+                                    data['name'],
                                     style: TextStyle(
                                         fontSize: 22,
                                         color: Colors.white,
@@ -125,15 +125,15 @@ class _CustomerProfileState extends State<CustomerProfile> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        InfoTile(label: "Mobile Number", value: "1234567890"),
+                      children:  [
+                        InfoTile(label: "Mobile Number", value: data['phone']),
                         Divider(),
-                        InfoTile(label: "Place", value: "Your City"),
+                        InfoTile(label: "Place", value: data['place']),
                         Divider(),
-                        InfoTile(label: "Email", value: "Customer@gmail.com"),
+                        InfoTile(label: "Email", value: data['email']),
                         Divider(),
                         InfoTile(
-                            label: "Location", value: "Street XYZ, Area ABC"),
+                            label: "Location", value: data['location']),
                       ],
                     ),
                   ),

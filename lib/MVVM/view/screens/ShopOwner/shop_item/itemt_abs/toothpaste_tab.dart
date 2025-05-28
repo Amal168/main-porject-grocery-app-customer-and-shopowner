@@ -97,174 +97,167 @@ class _ToothpasteTabState extends State<ToothpasteTab> {
 
     return Column(
       children: [
-        Card(
-          elevation: 10,
-          child: Container(
-            height: 40,
-            decoration:
-                BoxDecoration(border: Border.all(color: Colors.black26)),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: paste.length,
-              itemBuilder: (context, index) {
-                return TextButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedIndex = index;
-                    });
-                  },
-                  child: Text(
-                    paste[index],
-                    style: TextStyle(
-                      color:
-                          selectedIndex == index ? toggle2color : Colors.black,
-                    ),
+        SizedBox(
+          height: 50,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            itemCount: paste.length,
+            itemBuilder: (context, index) {
+              final isSelected = selectedIndex == index;
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: ChoiceChip(
+                  label: Text(paste[index]),
+                  selected: isSelected,
+                  onSelected: (_) => setState(() => selectedIndex = index),
+                  labelStyle: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black87,
+                    fontWeight: FontWeight.bold,
                   ),
-                );
-              },
-            ),
+                  backgroundColor: Colors.grey.shade200,
+                  selectedColor: toggle2color,
+                  shape: StadiumBorder(
+                    side: BorderSide(color: toggle2color),
+                  ),
+                ),
+              );
+            },
           ),
         ),
+        const SizedBox(height: 10),
         Expanded(
           child: filteredList.isEmpty
-              ? Center(child: Text("No data available"))
+              ? const Center(child: Text("No data available"))
               : GridView.builder(
+                  padding: const EdgeInsets.all(10),
                   itemCount: filteredList.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 3,
-                    mainAxisExtent: 370,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 16,
+                    mainAxisExtent: 300,
                   ),
                   itemBuilder: (context, index) {
                     final item = filteredList[index];
+                    final isLowStock = item["ShopPrice"] < 5;
+
                     return Container(
-                      margin: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(18),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            offset: Offset(2, 4),
+                          )
+                        ],
                       ),
+                      padding: const EdgeInsets.all(12),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(height: 10),
-                          Container(
-                            width: 118,
-                            height: 121,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                    "assets/571332.jpg",
-                                  ),
-                                  fit: BoxFit.cover),
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(30),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                              "assets/tootpaste.jpeg",
+                              height: 120,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
-                            // Add image here if needed
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Text(
                             item["ProductName"],
-                            style: TextStyle(fontSize: 15),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 6),
                           Text(
-                            "Only ${item["ShopPrice"]} Left",
+                            "Only ${item["ShopPrice"]} left",
                             style: TextStyle(
-                                fontSize: 15,
-                                color: item["ShopPrice"] < 5
-                                    ? Colors.red
-                                    : toggle2color),
+                              color: isLowStock ? redbutton : toggle2color,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
                           ),
-                          SizedBox(height: 10),
-                          Text("${item['Weight']} ${item['Rupees']}Rs",
-                              style: TextStyle(fontSize: 15)),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 6),
+                          Text(
+                            "${item['Weight']} • ${item['Rupees']} Rs",
+                            style: const TextStyle(fontSize: 14, color: Colors.black87),
+                          ),
+                          const SizedBox(height: 14),
                           Row(
-                            // mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ElevatedButton(
-                                  style: ButtonStyle(
-                                      // side:
-                                      //     WidgetStatePropertyAll(BorderSide()),
-                                      backgroundColor:
-                                          WidgetStatePropertyAll(button1)),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.inventory, size: 16, color: Colors.white),
+                                  label: const Text("Restock",
+                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: button1,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                  ),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          content: TextFormField(
-                                            controller: stocknumber,
-                                            validator: (value) {
-                                              if (stocknumber.text.isEmpty) {
-                                                return "Enter the stocks";
-                                              }
-                                              return null;
-                                            },
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                                labelText: "Stock Number"),
-                                          ),
-                                          actions: [
-                                            ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text("Cancel")),
-                                            ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text("ok"))
-                                          ],
-                                        );
-                                      },
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("Restock Product"),
+                                        content: TextFormField(
+                                          controller: stocknumber,
+                                          keyboardType: TextInputType.number,
+                                          decoration: const InputDecoration(labelText: "Stock Number"),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: const Text("Cancel")),
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                // TODO: Handle restocking logic
+                                              },
+                                              child: const Text("OK")),
+                                        ],
+                                      ),
                                     );
                                   },
-                                  child: Text(
-                                    "Restock",
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )),
-                              ElevatedButton(
-                                  style: ButtonStyle(
-                                      // side:
-                                      //     WidgetStatePropertyAll(BorderSide()),
-                                      backgroundColor:
-                                          WidgetStatePropertyAll(button2)),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(Icons.delete_outline, size: 16, color: Colors.white),
+                                  label: const Text("Delete",
+                                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: button2,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                  ),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text("Are You Sure"),
-                                          actions: [
-                                            ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text("Cancel")),
-                                            ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text("ok"))
-                                          ],
-                                        );
-                                      },
+                                      builder: (context) => AlertDialog(
+                                        title: const Text("Delete Product"),
+                                        content: const Text("Are you sure you want to delete this product?"),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () => Navigator.pop(context),
+                                              child: const Text("Cancel")),
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                // TODO: Handle delete logic
+                                              },
+                                              child: const Text("Delete")),
+                                        ],
+                                      ),
                                     );
                                   },
-                                  child: Text(
-                                    "Delete",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13),
-                                  ))
+                                ),
+                              ),
                             ],
                           ),
                         ],
@@ -275,5 +268,6 @@ class _ToothpasteTabState extends State<ToothpasteTab> {
         ),
       ],
     );
+
   }
 }

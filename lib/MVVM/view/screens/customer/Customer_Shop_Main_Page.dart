@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/custometextfield.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/slider.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/Customer_Profile.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/customer_Bottom.dart';
-import 'package:image_picker/image_picker.dart';
 
 class CustomerShopMainPage extends StatefulWidget {
   const CustomerShopMainPage({super.key});
@@ -15,98 +13,58 @@ class CustomerShopMainPage extends StatefulWidget {
 class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
   final TextEditingController _search = TextEditingController();
   final List<Map<String, dynamic>> customerShopNear = [
-    {
-      "ShopName": "Devakaran's Shop",
-      "ShopPlace": "Dayankave",
-      "PhoneNumber": "3254589247"
-    },
-    {
-      "ShopName": "milma",
-      "ShopPlace": "Dayankave",
-      "PhoneNumber": "1234567890"
-    },
-    {
-      "ShopName": "Athul",
-      "ShopPlace": "Mathotezham",
-      "PhoneNumber": "3692581407"
-    },
-    {
-      "ShopName": "Almas",
-      "ShopPlace": "Mathotezham",
-      "PhoneNumber": "1593574862"
-    },
-    {
-      "ShopName": "mrithul's Shop",
-      "ShopPlace": "K T thazham",
-      "PhoneNumber": "1237890456"
-    }
+    {"ShopName": "Devakaran's Shop", "ShopPlace": "Dayankave", "PhoneNumber": "3254589247"},
+    {"ShopName": "milma", "ShopPlace": "Dayankave", "PhoneNumber": "1234567890"},
+    {"ShopName": "Athul", "ShopPlace": "Mathotezham", "PhoneNumber": "3692581407"},
+    {"ShopName": "Almas", "ShopPlace": "Mathotezham", "PhoneNumber": "1593574862"},
+    {"ShopName": "mrithul's Shop", "ShopPlace": "K T thazham", "PhoneNumber": "1237890456"}
   ];
   final List<Map<String, dynamic>> customerShopOther = [
-    {
-      "ShopName": "Devakaran's Shop",
-      "ShopPlace": "Potamil",
-      "PhoneNumber": "3254589247"
-    },
+    {"ShopName": "Devakaran's Shop", "ShopPlace": "Potamil", "PhoneNumber": "3254589247"},
     {"ShopName": "milma", "ShopPlace": "Potamil", "PhoneNumber": "1234567890"},
-    {
-      "ShopName": "Athul",
-      "ShopPlace": "Kachilate",
-      "PhoneNumber": "3692581407"
-    },
+    {"ShopName": "Athul", "ShopPlace": "Kachilate", "PhoneNumber": "3692581407"},
     {"ShopName": "Almas", "ShopPlace": "Pala", "PhoneNumber": "1593574862"},
-    {
-      "ShopName": "mrithul's Shop",
-      "ShopPlace": "Kachilate",
-      "PhoneNumber": "1237890456"
-    },
-    {
-      "ShopName": "milma",
-      "ShopPlace": "PalKambani",
-      "PhoneNumber": "1234567890"
-    },
-    {
-      "ShopName": "Athul",
-      "ShopPlace": "PalKambani",
-      "PhoneNumber": "3692581407"
-    },
+    {"ShopName": "mrithul's Shop", "ShopPlace": "Kachilate", "PhoneNumber": "1237890456"},
+    {"ShopName": "milma", "ShopPlace": "PalKambani", "PhoneNumber": "1234567890"},
+    {"ShopName": "Athul", "ShopPlace": "PalKambani", "PhoneNumber": "3692581407"},
     {"ShopName": "Almas", "ShopPlace": "Palazhi", "PhoneNumber": "1593574862"},
-    {
-      "ShopName": "mrithul's Shop",
-      "ShopPlace": "Pala",
-      "PhoneNumber": "1237890456"
-    }
+    {"ShopName": "mrithul's Shop", "ShopPlace": "Pala", "PhoneNumber": "1237890456"}
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
         automaticallyImplyLeading: false,
         title: TextFormField(
+          controller: _search,
           decoration: InputDecoration(
-              hintText: "Search Your Shop",
-              prefixIcon: Icon(
-                Icons.search,
-                size: 30,
-              ),
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+            hintText: "Search Your Shop",
+            prefixIcon: const Icon(Icons.search, size: 24),
+            filled: true,
+            fillColor: Colors.grey[100],
+            contentPadding: const EdgeInsets.symmetric(vertical: 0),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide.none,
+            ),
+          ),
         ),
         actions: [
           GestureDetector(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => CustomerProfile()));
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  image: DecorationImage(image: AssetImage("assets/dummy profile photo.jpg"))
-                ),
-              )),
-          SizedBox(width: 10),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => CustomerProfile()));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: CircleAvatar(
+                radius: 22,
+                backgroundImage: AssetImage("assets/dummy profile photo.jpg"),
+              ),
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -115,64 +73,58 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
+              SizedBox(
                 width: double.infinity,
                 height: 200,
                 child: Sliderpage(),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               const Text(
                 "Nearest Shops",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: "Inria_Sans",
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 169,
+                height: 190,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: customerShopNear.length,
                   itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        // Navigate to the corresponding shop page
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => CustomerBottom()));
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 10,
-                        child: SizedBox(
-                          width: 123,
+                    final shop = customerShopNear[index];
+                    return GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CustomerBottom())),
+                      child: Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        width: 140,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Container(
-                                width: 86,
-                                height: 88,
-                                decoration: BoxDecoration(
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/571332.jpg"),
-                                    fit: BoxFit.cover,
-                                  ),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  "assets/571332.jpg",
+                                  height: 80,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(height: 5),
-                              Text(
-                                customerShopNear[index]["ShopName"],
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              Text(customerShopNear[index]["ShopPlace"],
-                                  style: TextStyle(fontSize: 14)),
-                              Text(customerShopNear[index]["PhoneNumber"],
-                                  style: TextStyle(fontSize: 13)),
+                              const SizedBox(height: 8),
+                              Text(shop["ShopName"], style: const TextStyle(fontWeight: FontWeight.w600)),
+                              Text(shop["ShopPlace"], style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                              Text(shop["PhoneNumber"], style: const TextStyle(fontSize: 12)),
                             ],
                           ),
                         ),
@@ -184,11 +136,7 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
               const SizedBox(height: 20),
               const Text(
                 "Other Shops",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: "Inria_Sans",
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
               GridView.builder(
@@ -197,56 +145,45 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                 itemCount: customerShopOther.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  mainAxisSpacing: 1,
-                  crossAxisSpacing: 2,
-                  childAspectRatio: 0.70,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 5,
+                  childAspectRatio: 0.75,
                 ),
                 itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      // Navigate to the corresponding shop page
-                      Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => CustomerBottom()));
-                    },
-                    child: Card(
-                      elevation: 10,
-                      color: Colors.white,
+                  final shop = customerShopOther[index];
+                  return GestureDetector(
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => CustomerBottom())),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2)),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(8),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 70,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(15),
-                              image: const DecorationImage(
-                                image: AssetImage("assets/571332.jpg"),
-                                fit: BoxFit.cover,
-                              ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.asset(
+                              "assets/571332.jpg",
+                              height: 70,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          const SizedBox(height: 5),
-                          Text(
-                            customerShopOther[index]["ShopName"],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            customerShopOther[index]["ShopPlace"],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 13),
-                          ),
-                          Text(
-                            customerShopOther[index]["PhoneNumber"],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12,
-                            ),
-                          ),
+                          const SizedBox(height: 6),
+                          Text(shop["ShopName"],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                          Text(shop["ShopPlace"],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                          Text(shop["PhoneNumber"],
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 11)),
                         ],
                       ),
                     ),

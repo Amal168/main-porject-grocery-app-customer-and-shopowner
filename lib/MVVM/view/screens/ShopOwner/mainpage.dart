@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderReceved.dart';
@@ -12,74 +11,68 @@ class Mainpage extends StatefulWidget {
   State<Mainpage> createState() => _MainpageState();
 }
 
-class _MainpageState extends State<Mainpage>
-    with TickerProviderStateMixin {
-  List colors = [Colors.black];
-  late TabController tabcontrol;
-
-  @override
-  void initState() {
-    super.initState();
-    tabcontrol = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    tabcontrol.dispose();
-    super.dispose();
-  }
-
-  final List<String> _label = ['Recive', 'Send'];
-  List<Color> color = [toggle2color];
-  @override
+class _MainpageState extends State<Mainpage> {
   int selected = 0;
+
+  final List<String> _labels = ['Received', 'Sent'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
+        backgroundColor: toggle2color,
+        elevation: 0,
+        title: const Text(
+          "Order Manager",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        centerTitle: true,
         automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
-          Align(alignment: Alignment.topLeft, child: CircleAvatar(child: Image(image: AssetImage("assets/dummy profile photo.jpg")),)),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Card(
-              color: Colors.green,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              elevation: 5,
+          const SizedBox(height: 20),
+          Align(
+            alignment: Alignment.center,
+            child: CircleAvatar(
+              radius: 40,
+              backgroundImage: const AssetImage("assets/dummy profile photo.jpg"),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            elevation: 5,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
               child: ToggleSwitch(
+                minWidth: 140.0,
+                minHeight: 50.0,
                 initialLabelIndex: selected,
-                cornerRadius: 15,
-                animate: true,
-                animationDuration: 300,
-                curve: Curves.easeInOut,
-                fontSize: 18,
-                inactiveBgColor: Colors.white,
-                activeBgColor: color,
-                borderWidth: 3.0,
-                borderColor: [Colors.black],
-                dividerMargin: 10,
-                minWidth: 310,
-                
+                totalSwitches: 2,
+                labels: _labels,
                 radiusStyle: true,
-                minHeight: 60,
-                labels: _label,
-                totalSwitches: _label.length,
+                cornerRadius: 20,
+                activeFgColor: Colors.white,
+                inactiveBgColor: Colors.grey.shade200,
+                activeBgColors: [
+                  [toggle2color],
+                  [toggle2color]
+                ],
                 onToggle: (index) {
                   setState(() {
                     selected = index!;
-
-                    selected == 0 ? color = [toggle2color] : [Colors.white];
-                    // debugPrint('Selected index: $selected');
                   });
                 },
               ),
             ),
           ),
-          Expanded(child: selected == 0 ? Orderreceved() : Ordersend()),
+          const SizedBox(height: 10),
+          Expanded(
+            child: selected == 0 ? const Orderreceved() : const Ordersend(),
+          ),
         ],
       ),
     );
