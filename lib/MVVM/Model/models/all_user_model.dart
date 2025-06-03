@@ -8,8 +8,8 @@ class AllUserModel {
   String? shopname;
   String? shoptime;
   String? phone;
-  String? place;
   String? location;
+  String? Address;
   FieldValue? createAt;
 
   AllUserModel({
@@ -20,8 +20,8 @@ class AllUserModel {
     this.role,
     this.name,
     this.phone,
-    this.place,
     this.location,
+    this.Address,
     this.createAt,
   });
 
@@ -34,8 +34,8 @@ class AllUserModel {
       shopname: map['shopname'],
       shoptime: map['shoptime'],
       phone: map['phone'],
-      place: map['place'],
       location: map['location'],
+      Address: map['Address'],
       createAt: map['createAt'],
     );
   }
@@ -49,8 +49,8 @@ class AllUserModel {
       'role': role,
       'name': name,
       'phone': phone,
-      'place': place,
       'location': location,
+      'Address': Address,
       'createAt': createAt,
     };
   }

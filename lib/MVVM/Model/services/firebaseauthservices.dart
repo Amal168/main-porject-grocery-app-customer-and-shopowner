@@ -19,13 +19,13 @@ class Firebaseothservices {
 
       if (context.mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Entered Scussefully")));
+            .showSnackBar(SnackBar(content: Text("Entered Scussefully",textAlign: TextAlign.center,)));
       }
       return credential;
     } on FirebaseAuthException {
       if (context.mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Somthing Went Wrong")));
+            .showSnackBar(SnackBar(content: Text("Somthing Went Wrong",textAlign: TextAlign.center)));
       }
     } catch (e) {
       print(e);
@@ -48,9 +48,9 @@ class Firebaseothservices {
         AllUserModel userData = AllUserModel(
           createAt: FieldValue.serverTimestamp(),
           email: auth.currentUser!.email,
+          Address: '',
+          uid: FirebaseAuth.instance.currentUser?.uid,
           location: '',
-          uid: uid,
-          place: '',
           phone: '',
           name: '',
           role: role

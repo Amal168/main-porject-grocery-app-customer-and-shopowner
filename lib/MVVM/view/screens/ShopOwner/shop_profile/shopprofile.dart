@@ -48,20 +48,21 @@ class Shopprofile extends StatelessWidget {
   Widget build(BuildContext context) {
     final uid = FirebaseAuth.instance.currentUser?.uid;
     return StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("users").doc(uid).snapshots(),
+        stream:
+            FirebaseFirestore.instance.collection("users").doc(uid).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            final data = snapshot.data!.data();
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final data = snapshot.data!.data();
 
-            if (data == null) {
-              return Center(
-                child: Text('No user data'),
-              );
-            }
+          if (data == null) {
+            return Center(
+              child: Text('No user data'),
+            );
+          }
           return Scaffold(
             backgroundColor: Colors.grey[100],
             appBar: AppBar(
@@ -126,7 +127,7 @@ class Shopprofile extends StatelessWidget {
                   const SizedBox(height: 60),
 
                   // Shop Name & Hours
-                 Text(
+                  Text(
                     data['name'],
                     style: TextStyle(
                         fontSize: 26,
@@ -143,9 +144,9 @@ class Shopprofile extends StatelessWidget {
 
                   // Info Cards
                   infoCard(data['phone'], Icons.phone),
-                  infoCard(data['place'], Icons.location_city),
+                  infoCard(data['location'], Icons.location_city),
                   infoCard(data['email'], Icons.email),
-                  infoCard(data['location'], Icons.map),
+                  infoCard(data['Address'], Icons.map),
 
                   const SizedBox(height: 30),
 
@@ -169,8 +170,10 @@ class Shopprofile extends StatelessWidget {
                         }),
                         const SizedBox(height: 16),
                         actionIconButton(
-                            context, Icons.logout_outlined, "Logout", () {
+                            context, Icons.logout_outlined, "Logout", ()async {
                           // Logout logic here
+                         await Firebaseothservices().signOut();
+
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(

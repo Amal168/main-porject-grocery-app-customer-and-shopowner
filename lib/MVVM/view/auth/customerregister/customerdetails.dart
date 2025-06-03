@@ -17,8 +17,8 @@ class _CustomerdetailsState extends State<Customerdetails> {
   final name = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
-  final place = TextEditingController();
   final location = TextEditingController();
+  final Address = TextEditingController();
   final formkey = GlobalKey<FormState>();
 
   @override
@@ -89,23 +89,18 @@ class _CustomerdetailsState extends State<Customerdetails> {
                         ),
                         const SizedBox(height: 12),
 
-                        Custometextfield(
-                          hinttext: "Email Address",
-                          textEditingController: email,
-                          validate: (value) => value!.isEmpty ? "Enter your email" : null,
-                        ),
-                        const SizedBox(height: 12),
+                        
 
                         Custometextfield(
                           hinttext: "Location",
-                          textEditingController: place,
-                          validate: (value) => value!.isEmpty ? "Enter your place" : null,
+                          textEditingController: location,
+                          validate: (value) => value!.isEmpty ? "Enter your location" : null,
                         ),
                         const SizedBox(height: 12),
 
                         Custometextfield(
                           hinttext: "Address",
-                          textEditingController: location,
+                          textEditingController: Address,
                           length: 5,
                           validate: (value) => value!.isEmpty ? "Enter your location" : null,
                         ),
@@ -128,8 +123,8 @@ class _CustomerdetailsState extends State<Customerdetails> {
                                   .update({
                                 "name": name.text.trim(),
                                 "phone": phone.text.trim(),
-                                "place": place.text.trim(),
                                 "location": location.text.trim(),
+                                "Address": Address.text.trim(),
                                 "isCustomerVerified": true,
                               });
 

@@ -11,9 +11,9 @@ class Addoffers extends StatefulWidget {
 }
 
 class _AddoffersState extends State<Addoffers> {
-  List<File> photo = [];
-  DateTime? setdate;
   File? _image;
+  DateTime? setdate;
+  bool offerSubmitted = false;
 
   Future pickimage(ImageSource source) async {
     final imagefile = await ImagePicker().pickImage(source: source);
@@ -22,6 +22,38 @@ class _AddoffersState extends State<Addoffers> {
         _image = File(imagefile.path);
       });
     }
+  }
+
+  void showImageSourceDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text("Select Image Source",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Camera"),
+              onTap: () {
+                Navigator.pop(context);
+                pickimage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo),
+              title: const Text("Gallery"),
+              onTap: () {
+                Navigator.pop(context);
+                pickimage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -67,54 +99,8 @@ class _AddoffersState extends State<Addoffers> {
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.image),
-                label:
-                    const Text("Choose Image", style: TextStyle(fontSize: 16)),
-                onPressed: () {
-                  if (photo.isEmpty) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          title: const Text("Select Image Source",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.camera_alt),
-                                title: const Text("Camera"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  pickimage(ImageSource.camera);
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.photo),
-                                title: const Text("Gallery"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  pickimage(ImageSource.gallery);
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  } else if (photo.isNotEmpty) {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                    return    AlertDialog(
-                          title: Text("You Can only submit One Add At a Time"),
-                        );
-                      },
-                    );
-                  }
-                },
+                label: const Text("Select Image", style: TextStyle(fontSize: 16)),
+                onPressed: showImageSourceDialog,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: toggle3color,
                   shape: RoundedRectangleBorder(
@@ -175,17 +161,25 @@ class _AddoffersState extends State<Addoffers> {
             Center(
               child: MaterialButton(
                 onPressed: () {
-                  if (_image != null) {
-                    setState(() {
-                      photo.add(_image!);
-                      _image = null;
-                    });
+                  if (offerSubmitted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Offer image added")),
+                      const SnackBar(
+                          content: Text("Only one offer can be submitted at a time.")),
                     );
-                  } else {
+                  } else if (_image == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Please select an image")),
+                    );
+                  } else if (setdate == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please select a date")),
+                    );
+                  } else {
+                    setState(() {
+                      offerSubmitted = true;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Offer submitted successfully")),
                     );
                   }
                 },
@@ -199,46 +193,36 @@ class _AddoffersState extends State<Addoffers> {
                     style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Show Uploaded Offers
-            if (photo.isNotEmpty) ...[
+            const SizedBox(height: 30),
+            if (offerSubmitted && _image != null) ...[
               const Divider(height: 40, thickness: 1),
               const Text(
-                "Uploaded Offers:",
+                "Uploaded Offer:",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: photo.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Colors.white,
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 4,
-                            offset: Offset(0, 2)),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.file(
-                        photo[index],
-                        width: double.infinity,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
+                        offset: Offset(0, 2)),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.file(
+                    _image!,
+                    width: double.infinity,
+                    height: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ]
+            ],
           ],
         ),
       ),

@@ -20,159 +20,164 @@ class _CustomerProfileState extends State<CustomerProfile> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: const Text("My Profile",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          "My Profile",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         backgroundColor: toggle2color,
         elevation: 0,
       ),
-      body: FutureBuilder(
-          future: FirebaseFirestore.instance
-              .collection('users')
-              .doc(Firebaseothservices().uid)
-              .get(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            final data = snapshot.data!.data();
+      body: FutureBuilder<DocumentSnapshot>(
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(Firebaseothservices().uid)
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            if (data == null) {
-              return Center(
-                child: Text('No user data'),
-              );
-            }
+          if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+            return const Center(child: Text('No user data found'));
+          }
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  // Profile Card
-                  Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                        colors: [toggle2color.withOpacity(0.9), toggle2color],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: Offset(0, 4),
-                        )
-                      ],
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                // Profile Card
+                Container(
+                  margin: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    gradient: LinearGradient(
+                      colors: [toggle2color.withOpacity(0.9), toggle2color],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    child: Column(
-                      children: [
-                        Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Column(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 55,
-                                    backgroundImage: AssetImage(
-                                        "assets/dummy profile photo.jpg"),
-                                    backgroundColor: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              children: [
+                                const CircleAvatar(
+                                  radius: 55,
+                                  backgroundImage:
+                                      AssetImage("assets/dummy profile photo.jpg"),
+                                  backgroundColor: Colors.white,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  data['name'] ?? 'No Name',
+                                  style: const TextStyle(
+                                    fontSize: 22,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  SizedBox(height: 10),
-                                  Text(
-                                    data['name'],
-                                    style: TextStyle(
-                                        fontSize: 22,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            IconButton(
-                              icon: Icon(Icons.edit, color: Colors.white70),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => EditCustomerProfile()));
-                              },
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.white70),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const EditCustomerProfile()),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
+                ),
 
-                  // Info Section
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 8,
-                            offset: Offset(0, 4))
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:  [
-                        InfoTile(label: "Mobile Number", value: data['phone']),
-                        Divider(),
-                        InfoTile(label: "Place", value: data['place']),
-                        Divider(),
-                        InfoTile(label: "Email", value: data['email']),
-                        Divider(),
-                        InfoTile(
-                            label: "Location", value: data['location']),
-                      ],
-                    ),
+                // Info Section
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, 4))
+                    ],
                   ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      InfoTile(label: "Mobile Number", value: data['phone'] ?? 'N/A'),
+                      const Divider(),
+                      InfoTile(label: "Location", value: data['location'] ?? 'N/A'),
+                      const Divider(),
+                      InfoTile(label: "Email", value: data['email'] ?? 'N/A'),
+                      const Divider(),
+                      InfoTile(label: "Address", value: data['Address'] ?? 'N/A'),
+                    ],
+                  ),
+                ),
 
-                  const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-                  // Action Buttons
-                  ButtonTile(
-                    icon: Icons.feedback_outlined,
-                    label: "Feedback",
-                    color: toggle2color,
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => CommonCommentRating()));
-                    },
-                  ),
-                  ButtonTile(
-                    icon: Icons.light_mode,
-                    label: "Light Mode",
-                    color: Colors.orangeAccent,
-                    onTap: () {},
-                  ),
-                  ButtonTile(
-                    icon: Icons.logout,
-                    label: "Logout",
-                    color: Colors.redAccent,
-                    onTap: () {
-                      // Firebaseothservices().signOut();
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Commonlogin()));
-                    },
-                  ),
-                  const SizedBox(height: 30),
-                ],
-              ),
-            );
-          }),
+                // Action Buttons
+                ButtonTile(
+                  icon: Icons.feedback_outlined,
+                  label: "Feedback",
+                  color: toggle2color,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const CommonCommentRating()),
+                    );
+                  },
+                ),
+                ButtonTile(
+                  icon: Icons.light_mode,
+                  label: "Light Mode",
+                  color: Colors.orangeAccent,
+                  onTap: () {
+                    // Light mode toggle logic
+                  },
+                ),
+                ButtonTile(
+                  icon: Icons.logout,
+                  label: "Logout",
+                  color: Colors.redAccent,
+                  onTap: () async {
+                    await Firebaseothservices().signOut();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => const Commonlogin()),
+                      (route) => false,
+                    );
+                  },
+                ),
+                const SizedBox(height: 30),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -190,9 +195,14 @@ class InfoTile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          Text(value, style: TextStyle(color: Colors.grey[600])),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+          ),
         ],
       ),
     );
@@ -205,11 +215,12 @@ class ButtonTile extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
   final Color color;
-  const ButtonTile(
-      {required this.icon,
-      required this.label,
-      required this.onTap,
-      required this.color});
+  const ButtonTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +230,7 @@ class ButtonTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: EdgeInsets.all(14),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
@@ -228,11 +239,10 @@ class ButtonTile extends StatelessWidget {
           child: Row(
             children: [
               Icon(icon, color: color),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Text(
                 label,
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               )
             ],
           ),

@@ -43,9 +43,9 @@ class _EditCustomerProfileState extends State<EditCustomerProfile> {
         Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
         _edieownername.text = data['name'] ?? '';
         _editnumber.text = data['phone'] ?? '';
-        _editpalce.text = data['place'] ?? '';
+        _editpalce.text = data['location'] ?? '';
         _editemail.text = data['email'] ?? '';
-        _editlocation.text = data['location'] ?? '';
+        _editlocation.text = data['Address'] ?? '';
         // _imageUrl = data['imageUrl'];
         setState(() {});
       }

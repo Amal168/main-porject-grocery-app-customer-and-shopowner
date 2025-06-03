@@ -19,7 +19,7 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
   final _phone = TextEditingController();
   final _email = TextEditingController();
   final _shoptime = TextEditingController();
-  final _place = TextEditingController();
+  final _address = TextEditingController();
   final _location = TextEditingController();
   final formkey = GlobalKey<FormState>();
 
@@ -37,7 +37,7 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -61,7 +61,7 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           "Shop Details",
                           style: TextStyle(
                             fontSize: 36,
@@ -94,18 +94,11 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
                           textEditingController: _phone,
                           validate: (value) {
                             if (value!.isEmpty) return "Enter your phone";
-                            if (value.length != 10) return "Enter a valid phone";
+                            if (value.length != 10) return "Enter a valid phone number";
                             return null;
                           },
                         ),
-                        const SizedBox(height: 12),
-
-                        Custometextfield(
-                          hinttext: "Email Address",
-                          textEditingController: _email,
-                          validate: (value) =>
-                              value!.isEmpty ? "Enter your email" : null,
-                        ),
+                        
                         const SizedBox(height: 12),
 
                         Custometextfield(
@@ -118,19 +111,19 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
                         const SizedBox(height: 12),
 
                         Custometextfield(
-                          hinttext: "Place",
-                          textEditingController: _place,
+                          hinttext: "Location",
+                          textEditingController: _location,
                           validate: (value) =>
-                              value!.isEmpty ? "Enter your place" : null,
+                              value!.isEmpty ? "Enter your location" : null,
                         ),
                         const SizedBox(height: 12),
 
                         Custometextfield(
-                          hinttext: "Location",
-                          textEditingController: _location,
+                          hinttext: "Address",
+                          textEditingController: _address,
                           length: 5,
                           validate: (value) =>
-                              value!.isEmpty ? "Enter your location" : null,
+                              value!.isEmpty ? "Enter your address" : null,
                         ),
                         const SizedBox(height: 30),
 
@@ -141,31 +134,32 @@ class _ShopownerdetailState extends State<Shopownerdetail> {
                           textweight: FontWeight.bold,
                           width: 320,
                           hight: 55,
-                          color: WidgetStatePropertyAll(redbutton),
+                          color: const WidgetStatePropertyAll(redbutton),
                           onPressed: () async {
                             if (formkey.currentState!.validate()) {
-                              await Firebaseothservices()
-                                  .dbuser
+                              final authService = Firebaseothservices();
+                              await authService.dbuser
                                   .collection('users')
-                                  .doc(Firebaseothservices().uid)
+                                  .doc(authService.uid)
                                   .update({
                                 "name": _name.text.trim(),
                                 "phone": _phone.text.trim(),
-                                "place": _place.text.trim(),
+                                "location": _location.text.trim(),
                                 "shopname": _shopname.text.trim(),
                                 "shoptime": _shoptime.text.trim(),
-                                "location": _location.text.trim(),
+                                "Address": _address.text.trim(),
                                 "isShopVerified": true,
-
                               });
 
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => ShopBottumBar(),
-                                ),
-                                (route) => false,
-                              );
+                              if (mounted) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const ShopBottumBar(),
+                                  ),
+                                  (route) => false,
+                                );
+                              }
                             }
                           },
                         )
