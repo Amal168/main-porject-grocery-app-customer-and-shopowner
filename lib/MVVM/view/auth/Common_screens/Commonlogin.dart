@@ -229,7 +229,7 @@ class _CommonloginState extends State<Commonlogin> {
                           
                         const SizedBox(height: 24),
 
-                        Row(
+                      const  Row(
                           children: const [
                             Expanded(child: Divider(thickness: 1, color: Colors.white24)),
                             Padding(

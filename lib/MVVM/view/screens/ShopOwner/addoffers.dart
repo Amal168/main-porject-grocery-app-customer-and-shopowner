@@ -88,8 +88,8 @@ class _AddoffersState extends State<Addoffers> {
                 image: DecorationImage(
                   image: _image != null
                       ? FileImage(_image!)
-                      : const NetworkImage(
-                              "https://th.bing.com/th/id/OIP.EwG6x9w6RngqsKrPJYxULAHaHa?w=180&h=180")
+                      : const AssetImage(
+                              "assets/default image.png")
                           as ImageProvider,
                   fit: BoxFit.cover,
                 ),

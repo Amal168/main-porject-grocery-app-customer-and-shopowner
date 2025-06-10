@@ -219,10 +219,10 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                     itemCount: allShops.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 6,
-                      childAspectRatio: 0.98,
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 15,
+                      crossAxisSpacing: 15,
+                      childAspectRatio: 0.88,
                     ),
                     itemBuilder: (context, index) {
                       final shopData =
@@ -257,7 +257,7 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                                const SizedBox(height: 6),
+                                const SizedBox(height: 10),
                                 Text(shopData['shopname'] ?? " ",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -265,12 +265,14 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 13)),
+                                         const SizedBox(height: 6),
                                 Text(shopData['location'] ?? "",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                         fontSize: 12, color: Colors.grey)),
+                                          const SizedBox(height: 10),
                                 Text(shopData['phone'] ?? "",
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(fontSize: 11)),

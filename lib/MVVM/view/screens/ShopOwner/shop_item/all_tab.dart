@@ -149,7 +149,7 @@ class _ShopItemsTabViewState extends State<ShopItemsTabView> {
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) {
                               return Image.asset(
-                                "assets/snacks.jpeg",
+                                "assets/default image.png",
                                 height: 120,
                                 width: double.infinity,
                                 fit: BoxFit.cover,

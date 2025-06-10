@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_item/itemt_abs/all_tab.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_item/all_tab.dart';
 import 'addproduct.dart';
 
 class Shopitems extends StatefulWidget {

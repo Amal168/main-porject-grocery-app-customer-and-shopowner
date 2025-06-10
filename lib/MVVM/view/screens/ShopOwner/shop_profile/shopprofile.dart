@@ -6,6 +6,7 @@ import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/Commonlogin.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/Common_Screen/CommonCommentRating.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_profile/shopEditPrfile.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/Customer_Profile.dart';
 
 class Shopprofile extends StatelessWidget {
   final String? shopPhotoUrl;
@@ -64,14 +65,17 @@ class Shopprofile extends StatelessWidget {
             );
           }
           return Scaffold(
-            backgroundColor: Colors.grey[100],
+            
+            backgroundColor: Colors.white,
             appBar: AppBar(
               title: const Text("My Shop Profile"),
               backgroundColor: toggle2color,
               centerTitle: true,
               elevation: 0,
             ),
+            
             body: SingleChildScrollView(
+              
               child: Column(
                 children: [
                   // Shop Photo Banner
@@ -155,32 +159,110 @@ class Shopprofile extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       children: [
-                        actionIconButton(
-                            context, Icons.feedback_outlined, "Feedback", () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const CommonCommentRating()));
-                        }),
-                        const SizedBox(height: 16),
-                        actionIconButton(
-                            context, Icons.light_mode_outlined, "Light Mode",
-                            () {
-                          // Light mode toggle logic here
-                        }),
-                        const SizedBox(height: 16),
-                        actionIconButton(
-                            context, Icons.logout_outlined, "Logout", ()async {
-                          // Logout logic here
-                         await Firebaseothservices().signOut();
-
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const Commonlogin()),
-                            (route) => false,
-                          );
-                        }),
+                        ButtonTile(
+                  icon: Icons.feedback_outlined,
+                  label: "Feedback",
+                  color: toggle2color,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>  CommonCommentRating(name:data['name'],)),
+                    );
+                  },
+                ),
+                ButtonTile(
+                  icon: Icons.light_mode,
+                  label: "Light Mode",
+                  color: Colors.orangeAccent,
+                  onTap: () {
+                    // Light mode toggle logic
+                  },
+                ),
+                ButtonTile(
+                  icon: Icons.logout,
+                  label: "Logout",
+                  color: Colors.redAccent,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 20),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: Image.asset(
+                                  "assets/🦆 icon _gnome logout_.png"),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "Are you sure you want to logout?",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 25),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.greenAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                  ),
+                                  onPressed: () async {
+                                    await Firebaseothservices().signOut();
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const Commonlogin()),
+                                      (route) => false,
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Yes",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.redAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "No",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 30),
                       ],
                     ),
                   ),

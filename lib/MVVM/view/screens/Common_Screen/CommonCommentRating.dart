@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton.dart';
 
 class CommonCommentRating extends StatefulWidget {
-  const CommonCommentRating({super.key});
+  String name;
+   CommonCommentRating({super.key,required this .name});
 
   @override
   State<CommonCommentRating> createState() => _CommonCommentRatingState();
@@ -124,10 +127,40 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
                 hight: 50,
                 textsize: 20,
                 textcolor: Colors.white,
-                onPressed: () {
+                onPressed: () async {
+                  final user = FirebaseAuth.instance.currentUser;
+
+                  if (user == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content:
+                              Text("You must be logged in to send feedback.")),
+                    );
+                    return;
+                  }
+
+                  if (_comments.text.trim().isEmpty && _rating == 0) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text("Please provide a comment or rating.")),
+                    );
+                    return;
+                  }
+
+                  await FirebaseFirestore.instance
+                      .collection('CommentReatings')
+                      .add({
+                    "user_id": user.uid,
+                    "message": _comments.text.trim(),
+                    "rating": _rating,
+                    "timestamp": FieldValue.serverTimestamp(),
+                    'name':widget.name
+                  });
+
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Your message has been sent")),
+                    const SnackBar(
+                        content: Text("Your feedback has been submitted.")),
                   );
                 },
                 text: "Send",

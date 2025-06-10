@@ -63,14 +63,14 @@ class CustomerShop extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Row(
+              child: const Row(
                 children: [
                   CircleAvatar(
                     radius: 45,
                     backgroundColor: Colors.white,
                     child: Icon(Icons.store, color: toggle2color, size: 50),
                   ),
-                  const SizedBox(width: 20),
+                   SizedBox(width: 20),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +108,6 @@ class CustomerShop extends StatelessWidget {
       
             const SizedBox(height: 30),
       
-            // Info tiles
             infoTile("9876543210", Icons.phone),
             infoTile("Elegant Street, City", Icons.location_on),
             infoTile("elegantmart@gmail.com", Icons.email),

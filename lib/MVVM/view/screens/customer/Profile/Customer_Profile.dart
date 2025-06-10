@@ -38,7 +38,9 @@ class _CustomerProfileState extends State<CustomerProfile> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasError || !snapshot.hasData || !snapshot.data!.exists) {
+          if (snapshot.hasError ||
+              !snapshot.hasData ||
+              !snapshot.data!.exists) {
             return const Center(child: Text('No user data found'));
           }
 
@@ -50,7 +52,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
                 // Profile Card
                 Container(
                   margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     gradient: LinearGradient(
@@ -77,8 +80,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
                               children: [
                                 const CircleAvatar(
                                   radius: 55,
-                                  backgroundImage:
-                                      AssetImage("assets/dummy profile photo.jpg"),
+                                  backgroundImage: AssetImage(
+                                      "assets/dummy profile photo.jpg"),
                                   backgroundColor: Colors.white,
                                 ),
                                 const SizedBox(height: 10),
@@ -99,7 +102,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const EditCustomerProfile()),
+                                    builder: (_) =>
+                                        const EditCustomerProfile()),
                               );
                             },
                           ),
@@ -126,13 +130,17 @@ class _CustomerProfileState extends State<CustomerProfile> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      InfoTile(label: "Mobile Number", value: data['phone'] ?? 'N/A'),
+                      InfoTile(
+                          label: "Mobile Number",
+                          value: data['phone'] ?? 'N/A'),
                       const Divider(),
-                      InfoTile(label: "Location", value: data['location'] ?? 'N/A'),
+                      InfoTile(
+                          label: "Location", value: data['location'] ?? 'N/A'),
                       const Divider(),
                       InfoTile(label: "Email", value: data['email'] ?? 'N/A'),
                       const Divider(),
-                      InfoTile(label: "Address", value: data['Address'] ?? 'N/A'),
+                      InfoTile(
+                          label: "Address", value: data['Address'] ?? 'N/A'),
                     ],
                   ),
                 ),
@@ -147,7 +155,8 @@ class _CustomerProfileState extends State<CustomerProfile> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const CommonCommentRating()),
+                      MaterialPageRoute(
+                          builder: (_) =>  CommonCommentRating(name: data['name'],)),
                     );
                   },
                 ),
@@ -163,12 +172,82 @@ class _CustomerProfileState extends State<CustomerProfile> {
                   icon: Icons.logout,
                   label: "Logout",
                   color: Colors.redAccent,
-                  onTap: () async {
-                    await Firebaseothservices().signOut();
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const Commonlogin()),
-                      (route) => false,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 20),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 80,
+                              width: 80,
+                              child: Image.asset(
+                                  "assets/🦆 icon _gnome logout_.png"),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "Are you sure you want to logout?",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 25),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.greenAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                  ),
+                                  onPressed: () async {
+                                    await Firebaseothservices().signOut();
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => const Commonlogin()),
+                                      (route) => false,
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Yes",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.redAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 10),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "No",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -195,7 +274,9 @@ class InfoTile extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text(label,
+              style:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           Flexible(
             child: Text(
               value,
@@ -242,7 +323,8 @@ class ButtonTile extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 label,
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.black),
               )
             ],
           ),

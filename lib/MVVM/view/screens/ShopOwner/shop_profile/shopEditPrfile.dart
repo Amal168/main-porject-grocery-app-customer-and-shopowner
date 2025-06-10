@@ -75,10 +75,10 @@ class _ShopeditprfileState extends State<Shopeditprfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         backgroundColor: toggle2color,
-        title: const Text("Edit Shop Profile"),
+        title: const Text("Edit Shop Profile",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
         centerTitle: true,
         leading: const BackButton(color: Colors.white),
       ),

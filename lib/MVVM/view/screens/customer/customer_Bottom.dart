@@ -12,7 +12,7 @@ class CustomerBottom extends StatefulWidget {
 
 class _CustomerBottomState extends State<CustomerBottom> {
   final List<Widget> _customerPages = [
-    const ProductItems(),
+     ProductItems(),
     const CustomerOrder(),
     const CustomerShop()
   ];

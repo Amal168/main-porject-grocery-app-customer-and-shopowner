@@ -233,8 +233,8 @@ class _AddproductState extends State<Addproduct> {
                         image: DecorationImage(
                           image: _image != null
                               ? FileImage(_image!)
-                              : const NetworkImage(
-                                  "https://th.bing.com/th/id/OIP.EwG6x9w6RngqsKrPJYxULAHaHa",
+                              :  AssetImage(
+                                  'assets/default image.png'
                                 ) as ImageProvider,
                           fit: BoxFit.cover,
                         ),
