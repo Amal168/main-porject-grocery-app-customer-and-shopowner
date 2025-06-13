@@ -59,7 +59,6 @@ class _ShopitemsState extends State<Shopitems> with TickerProviderStateMixin {
         return SafeArea(
           child: Column(
             children: [
-              // Search and Add Button
               Container(
                 color: toggle2color,
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -132,4 +131,3 @@ class _ShopitemsState extends State<Shopitems> with TickerProviderStateMixin {
     );
   }
 }
-

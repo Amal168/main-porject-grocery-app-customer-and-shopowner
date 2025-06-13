@@ -7,7 +7,8 @@ import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton
 
 class CommonCommentRating extends StatefulWidget {
   String name;
-   CommonCommentRating({super.key,required this .name});
+  String phone;
+   CommonCommentRating({super.key,required this .name,required this.phone});
 
   @override
   State<CommonCommentRating> createState() => _CommonCommentRatingState();
@@ -152,8 +153,9 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
                       .add({
                     "user_id": user.uid,
                     "message": _comments.text.trim(),
-                    "rating": _rating,
-                    "timestamp": FieldValue.serverTimestamp(),
+                    "rating": _rating as num,
+                    'phonenumber':widget.phone,
+                    "timestamp": FieldValue.serverTimestamp() as TimeOfDay,
                     'name':widget.name
                   });
 

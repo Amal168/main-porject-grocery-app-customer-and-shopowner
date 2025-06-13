@@ -10,7 +10,7 @@ class CustomerCart extends StatefulWidget {
 
 class _CustomerCartState extends State<CustomerCart> {
   List<int> itemCounts = List.generate(4, (index) => 1);
-  String radioButton = "1"; 
+  String radioButton = "1";
   final int discount = 0;
 
   int get subtotal => itemCounts.fold(0, (sum, count) => sum + (count * 20));
@@ -39,14 +39,14 @@ class _CustomerCartState extends State<CustomerCart> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: ListView.separated(
-          physics: const ClampingScrollPhysics(),
           itemCount: itemCounts.length,
           separatorBuilder: (context, index) => const SizedBox(height: 20),
           itemBuilder: (context, index) {
             return Card(
               elevation: 8,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
+                borderRadius: BorderRadius.circular(20),
+              ),
               shadowColor: Colors.black26,
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -94,11 +94,10 @@ class _CustomerCartState extends State<CustomerCart> {
                                 fontWeight: FontWeight.w600,
                                 color: toggle2color),
                           ),
-                          
                         ],
                       ),
+                      const Spacer(),
                       Column(
-                        mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
@@ -117,7 +116,7 @@ class _CustomerCartState extends State<CustomerCart> {
                               child: const Icon(Icons.close, color: Colors.white),
                             ),
                           ),
-                          SizedBox(height: 30,),
+                          const SizedBox(height: 30),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -175,7 +174,7 @@ class _CustomerCartState extends State<CustomerCart> {
           },
         ),
       ),
-      bottomSheet: Container(
+      bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
@@ -188,59 +187,62 @@ class _CustomerCartState extends State<CustomerCart> {
           ],
         ),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            buildPriceRow("Subtotal", "$subtotal Rs"),
-            buildPriceRow("Delivery Fee", "$deliveryfee Rs"),
-            buildPriceRow("Discount", "$discount Rs"),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                buildRadioButton("Pickup", "1"),
-                const SizedBox(width: 40),
-                buildRadioButton("Delivery", "2"),
-              ],
-            ),
-            const SizedBox(height: 20),
-            MaterialButton(
-              elevation: 12.0,
-              minWidth: double.infinity,
-              height: 50,
-              color: toggle2color,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        "A message will be sent to the customer about the order being completed"),
-                  ),
-                );
-                Navigator.pop(context);
-              },
-              child: Row(
+        child: SafeArea(
+          top: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildPriceRow("Subtotal", "$subtotal Rs"),
+              buildPriceRow("Delivery Fee", "$deliveryfee Rs"),
+              buildPriceRow("Discount", "$discount Rs"),
+              const SizedBox(height: 20),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Total:",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
-                  const SizedBox(width: 12),
-                  Text("$total Rs",
-                      style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
-                  const SizedBox(width: 12),
-                  const Icon(Icons.send, color: Colors.white, size: 22),
+                  buildRadioButton("Pickup", "1"),
+                  const SizedBox(width: 40),
+                  buildRadioButton("Delivery", "2"),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              MaterialButton(
+                elevation: 12.0,
+                minWidth: double.infinity,
+                height: 50,
+                color: toggle2color,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          "A message will be sent to the customer about the order being completed"),
+                    ),
+                  );
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Total:",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                    const SizedBox(width: 12),
+                    Text("$total Rs",
+                        style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                    const SizedBox(width: 12),
+                    const Icon(Icons.send, color: Colors.white, size: 22),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

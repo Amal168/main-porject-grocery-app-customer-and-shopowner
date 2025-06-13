@@ -156,7 +156,7 @@ class _CustomerProfileState extends State<CustomerProfile> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) =>  CommonCommentRating(name: data['name'],)),
+                          builder: (_) =>  CommonCommentRating(name: data['name'],phone: data['phone'],)),
                     );
                   },
                 ),

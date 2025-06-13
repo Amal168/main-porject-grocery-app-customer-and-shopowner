@@ -1,45 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatModel {
-  String? massage;
-  String? uid;
-  String? reciverid;
-  String? senderid;
-  String? sendername;
-  String? senderphone;
-  FieldValue? createAt;
+  final String message;
+  final String uid;
+  final String receiverId;
+  final String senderId;
+  final String senderName;
+  final String senderPhone;
+  final Timestamp createdAt;
 
   ChatModel({
-    this.createAt,
-    this.massage,
-    this.reciverid,
-    this.senderid,
-    this.sendername,
-    this.senderphone,
-    this.uid
+    required this.message,
+    required this.uid,
+    required this.receiverId,
+    required this.senderId,
+    required this.senderName,
+    required this.senderPhone,
+    required this.createdAt,
   });
 
   factory ChatModel.fromMap(Map<String, dynamic> map) {
     return ChatModel(
-      createAt: map['createAt'],
-      massage: map['massage'],
-      reciverid: map['reciverid'],
-      senderid: map['senderid'],
-      sendername: map['sendername'],
-      senderphone: map['senderphone'],
-      uid: map['uid']
+      message: map['message'] ?? '',
+      uid: map['uid'] ?? '',
+      receiverId: map['receiverId'] ?? '',
+      senderId: map['senderId'] ?? '',
+      senderName: map['senderName'] ?? '',
+      senderPhone: map['senderPhone'] ?? '',
+      createdAt: map['createdAt'] ?? Timestamp.now(),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'createAt':createAt,
-      'massage':massage,
-      'reciverid':reciverid,
-      'senderid':senderid,
-      'sendername':sendername,
-      'senderphone':senderphone,
-      'uid':uid
+      'message': message,
+      'uid': uid,
+      'receiverId': receiverId,
+      'senderId': senderId,
+      'senderName': senderName,
+      'senderPhone': senderPhone,
+      'createdAt': FieldValue.serverTimestamp(),
     };
   }
 }

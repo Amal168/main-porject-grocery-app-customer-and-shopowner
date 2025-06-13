@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:image_picker/image_picker.dart';
@@ -88,8 +89,7 @@ class _AddoffersState extends State<Addoffers> {
                 image: DecorationImage(
                   image: _image != null
                       ? FileImage(_image!)
-                      : const AssetImage(
-                              "assets/default image.png")
+                      : const AssetImage("assets/default image.png")
                           as ImageProvider,
                   fit: BoxFit.cover,
                 ),
@@ -99,7 +99,8 @@ class _AddoffersState extends State<Addoffers> {
             Center(
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.image),
-                label: const Text("Select Image", style: TextStyle(fontSize: 16)),
+                label:
+                    const Text("Select Image", style: TextStyle(fontSize: 16)),
                 onPressed: showImageSourceDialog,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: toggle3color,
@@ -161,27 +162,7 @@ class _AddoffersState extends State<Addoffers> {
             Center(
               child: MaterialButton(
                 onPressed: () {
-                  if (offerSubmitted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text("Only one offer can be submitted at a time.")),
-                    );
-                  } else if (_image == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please select an image")),
-                    );
-                  } else if (setdate == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Please select a date")),
-                    );
-                  } else {
-                    setState(() {
-                      offerSubmitted = true;
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Offer submitted successfully")),
-                    );
-                  }
+                  FirebaseFirestore.instance.collection('offers').add({});
                 },
                 minWidth: 200,
                 height: 50,

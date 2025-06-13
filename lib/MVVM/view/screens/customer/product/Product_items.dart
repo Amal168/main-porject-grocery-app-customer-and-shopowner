@@ -3,22 +3,26 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/Common_Screen/Shop_Customer_Chat.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_item/addproduct.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_item/all_tab.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/customer_cart.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/Customer_all_tab.dart';
 
 class ProductItems extends StatefulWidget {
-   ProductItems({super.key,});
+  final String shopid;
+
+  const ProductItems({super.key, required this.shopid});
 
   @override
   State<ProductItems> createState() => _ProductItemsState();
 }
 
-class _ProductItemsState extends State<ProductItems>
-    with TickerProviderStateMixin {
+class _ProductItemsState extends State<ProductItems> with TickerProviderStateMixin {
   TabController? _tabController;
   List<String> _categories = ['All'];
+
+  void _updateTabController(List<String> categories) {
+    _tabController?.dispose();
+    _tabController = TabController(length: categories.length, vsync: this);
+  }
 
   @override
   void dispose() {
@@ -37,7 +41,7 @@ class _ProductItemsState extends State<ProductItems>
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('products')
-          // .where()
+          .where('user_id', isEqualTo: widget.shopid)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -57,16 +61,19 @@ class _ProductItemsState extends State<ProductItems>
             .cast<String>()
             .toList();
 
-        _categories = ['All', ...allCategories];
-        _tabController = TabController(length: _categories.length, vsync: this);
+        final newCategories = ['All', ...allCategories];
+
+        if (_tabController == null || _categories.join() != newCategories.join()) {
+          _categories = newCategories;
+          _updateTabController(_categories);
+        }
 
         return SafeArea(
           child: Column(
             children: [
               Container(
                 color: toggle2color,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Row(
                   children: [
                     Expanded(
@@ -86,80 +93,73 @@ class _ProductItemsState extends State<ProductItems>
                       ),
                     ),
                     const SizedBox(width: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.chat_outlined),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const ShopCustomerChat()),
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: IconButton(
-                            icon: const Icon(Icons.shopping_cart_sharp),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => CustomerCart()),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                    _buildIconButton(
+                      icon: Icons.chat_outlined,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ShopCustomerChat()),
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 5),
+                    _buildIconButton(
+                      icon: Icons.shopping_cart_sharp,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CustomerCart()),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-
-              // TabBar
               Container(
                 color: toggle2color,
-                child: TabBar(
-                  controller: _tabController,
-                  isScrollable: true,
-                  labelColor: Colors.white,
-                  unselectedLabelColor: Colors.white70,
-                  indicatorColor: Colors.white,
-                  tabs: _categories.map((cat) => Tab(text: cat)).toList(),
-                ),
+                child: _tabController == null
+                    ? const SizedBox()
+                    : TabBar(
+                        controller: _tabController,
+                        isScrollable: true,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.white70,
+                        indicatorColor: Colors.white,
+                        tabs: _categories.map((cat) => Tab(text: cat)).toList(),
+                      ),
               ),
-
-              // TabBarView
               Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: _categories
-                      .map((cat) => ShopItemsTabView(category: cat))
-                      .toList(),
-                ),
+                child: _tabController == null
+                    ? const SizedBox()
+                    : TabBarView(
+                        controller: _tabController,
+                        children: _categories
+                            .map((cat) => CustomerAllTab(
+                                  category: cat,
+                                  shopid: widget.shopid,
+                                ))
+                            .toList(),
+                      ),
               ),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white,
+      ),
+      child: IconButton(
+        icon: Icon(icon),
+        onPressed: onTap,
+      ),
     );
   }
 }

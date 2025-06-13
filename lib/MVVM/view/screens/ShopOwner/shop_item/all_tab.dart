@@ -25,18 +25,21 @@ class _ShopItemsTabViewState extends State<ShopItemsTabView> {
   Future<void> _fetchTypes() async {
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) return;
+
       Query query = FirebaseFirestore.instance
           .collection('products')
-          .where('user_id', isEqualTo: currentUser?.uid);
+          .where('user_id', isEqualTo: currentUser.uid);
 
       if (widget.category != 'All') {
         query = query.where('Category', isEqualTo: widget.category);
       }
 
       final snapshot = await query.get();
+
       final types = snapshot.docs
-          .map((doc) => doc['type'] as String?)
-          .where((type) => type != null && type.trim().isNotEmpty)
+          .map((doc) => (doc['type'] as String?)?.trim())
+          .where((type) => type != null && type.isNotEmpty)
           .toSet()
           .cast<String>()
           .toList();
@@ -49,15 +52,21 @@ class _ShopItemsTabViewState extends State<ShopItemsTabView> {
     }
   }
 
-  Stream<QuerySnapshot> _productStream() {
+  Stream<QuerySnapshot> get _productStream {
     final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      // Return empty stream if no user
+      return const Stream.empty();
+    }
+
     Query query = FirebaseFirestore.instance
         .collection('products')
-        .where('user_id', isEqualTo: currentUser?.uid);
+        .where('user_id', isEqualTo: currentUser.uid);
 
     if (widget.category != 'All') {
       query = query.where('Category', isEqualTo: widget.category);
     }
+
     if (_selectedType != 'All') {
       query = query.where('type', isEqualTo: _selectedType);
     }
@@ -82,7 +91,9 @@ class _ShopItemsTabViewState extends State<ShopItemsTabView> {
                     label: Text(type),
                     selected: _selectedType == type,
                     onSelected: (_) {
-                      setState(() => _selectedType = type);
+                      setState(() {
+                        _selectedType = type;
+                      });
                     },
                     selectedColor: toggle2color,
                     labelStyle: TextStyle(
@@ -96,7 +107,7 @@ class _ShopItemsTabViewState extends State<ShopItemsTabView> {
           ),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-            stream: _productStream(),
+            stream: _productStream,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -190,7 +201,8 @@ class _ShopItemsTabViewState extends State<ShopItemsTabView> {
                                 label: const Text("Restock", style: TextStyle(fontSize: 13)),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: button1,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
                                 ),
                                 onPressed: () => _showRestockDialog(products[index].id),
                               ),
@@ -204,7 +216,8 @@ class _ShopItemsTabViewState extends State<ShopItemsTabView> {
                                 label: const Text("Delete", style: TextStyle(fontSize: 13)),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: button2,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
                                 ),
                                 onPressed: () => _deleteProduct(products[index].id),
                               ),

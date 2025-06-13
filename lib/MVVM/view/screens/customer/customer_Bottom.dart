@@ -4,22 +4,32 @@ import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/custo
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/Product_items.dart';
 
 class CustomerBottom extends StatefulWidget {
-  const CustomerBottom({super.key});
+  String shopid;
+  String customerid;
+  CustomerBottom({super.key, required this.customerid, required this.shopid});
 
   @override
   State<CustomerBottom> createState() => _CustomerBottomState();
 }
 
 class _CustomerBottomState extends State<CustomerBottom> {
-  final List<Widget> _customerPages = [
-     ProductItems(),
-    const CustomerOrder(),
-    const CustomerShop()
-  ];
+  late List<Widget> _customerPages;
+  
   int _selectedIndex = 0;
 
   void _onTap(int index) {
     setState(() => _selectedIndex = index);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _customerPages= [
+    ProductItems(shopid:widget.shopid,),
+    const CustomerOrder(),
+    const CustomerShop()
+  ];
+    super.initState();
   }
 
   @override
@@ -28,7 +38,6 @@ class _CustomerBottomState extends State<CustomerBottom> {
       body: _customerPages[_selectedIndex],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
-        
         child: ClipRRect(
           borderRadius: BorderRadius.circular(25),
           child: BottomNavigationBar(

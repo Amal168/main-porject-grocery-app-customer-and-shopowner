@@ -119,18 +119,19 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                           place.contains(searchText);
                       return matchesLocation && matchesSearch;
                     }).toList();
-
                     return ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: docs.length,
                       itemBuilder: (context, index) {
                         final shopData =
                             docs[index].data() as Map<String, dynamic>;
+                            final shopId = docs[index].id;
+                            final currentUserId = FirebaseAuth.instance.currentUser!.uid;
                         return GestureDetector(
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => CustomerBottom())),
+                                  builder: (_) => CustomerBottom(shopid: shopId,customerid: currentUserId,))),
                           child: Container(
                             margin: const EdgeInsets.only(right: 12),
                             width: 160,
@@ -222,15 +223,17 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                       crossAxisCount: 3,
                       mainAxisSpacing: 15,
                       crossAxisSpacing: 15,
-                      childAspectRatio: 0.88,
+                      childAspectRatio: 0.79,
                     ),
                     itemBuilder: (context, index) {
                       final shopData =
                           allShops[index].data() as Map<String, dynamic>;
+                          final shopId = allShops[index].id;
+                          final currentUserId = FirebaseAuth.instance.currentUser!.uid;
                       return GestureDetector(
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => CustomerBottom()),
+                          MaterialPageRoute(builder: (_) => CustomerBottom(shopid: shopId,customerid:currentUserId ,)),
                         ),
                         child: Container(
                           decoration: BoxDecoration(
