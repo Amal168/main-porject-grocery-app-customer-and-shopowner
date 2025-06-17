@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 
@@ -14,7 +15,7 @@ class _CustomerCartState extends State<CustomerCart> {
   final int discount = 0;
 
   int get subtotal => itemCounts.fold(0, (sum, count) => sum + (count * 20));
-  int get deliveryfee => radioButton == "1" ? 0 : 2;
+  int get deliveryfee => radioButton == "1" ? 0 : 10;
   int get total => subtotal + deliveryfee - discount;
 
   @override
@@ -113,7 +114,8 @@ class _CustomerCartState extends State<CustomerCart> {
                                 shape: BoxShape.circle,
                               ),
                               padding: const EdgeInsets.all(6),
-                              child: const Icon(Icons.close, color: Colors.white),
+                              child:
+                                  const Icon(Icons.close, color: Colors.white),
                             ),
                           ),
                           const SizedBox(height: 30),
@@ -138,8 +140,8 @@ class _CustomerCartState extends State<CustomerCart> {
                                 ),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 14.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0),
                                 child: Text("${itemCounts[index]}",
                                     style: const TextStyle(
                                         fontSize: 18,
@@ -214,6 +216,7 @@ class _CustomerCartState extends State<CustomerCart> {
                   borderRadius: BorderRadius.circular(30),
                 ),
                 onPressed: () {
+                  FirebaseFirestore.instance.collection('cartspage').add({});
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(

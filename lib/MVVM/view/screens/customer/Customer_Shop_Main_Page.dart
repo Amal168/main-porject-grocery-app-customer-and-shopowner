@@ -131,7 +131,7 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => CustomerBottom(shopid: shopId,customerid: currentUserId,))),
+                                  builder: (_) => CustomerBottom(shopid: shopId,customerid: currentUserId))),
                           child: Container(
                             margin: const EdgeInsets.only(right: 12),
                             width: 160,

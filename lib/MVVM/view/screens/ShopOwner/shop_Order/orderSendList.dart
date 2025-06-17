@@ -150,22 +150,22 @@ class _OrderreceavedlistState extends State<Ordersendlist> {
               _OrderreceavedlistState.buildPriceRow("Delivery Fee", "$deliveryfee Rs"),
               _OrderreceavedlistState.buildPriceRow("Discount", "$discount Rs"),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _OrderreceavedlistState.buildRadioButton("Pickup", "1", radioButton, (newValue) {
-                    setState(() {
-                      radioButton = newValue;
-                    });
-                  }),
-                  const SizedBox(width: 40),
-                  _OrderreceavedlistState.buildRadioButton("Delivery", "2", radioButton, (newValue) {
-                    setState(() {
-                      radioButton = newValue;
-                    });
-                  }),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     _OrderreceavedlistState.buildRadioButton("Pickup", "1", radioButton, (newValue) {
+              //       setState(() {
+              //         radioButton = newValue;
+              //       });
+              //     }),
+              //     const SizedBox(width: 40),
+              //     _OrderreceavedlistState.buildRadioButton("Delivery", "2", radioButton, (newValue) {
+              //       setState(() {
+              //         radioButton = newValue;
+              //       });
+              //     }),
+              //   ],
+              // ),
               const SizedBox(height: 20),
               MaterialButton(
                 elevation: 12.0,

@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/Common_Screen/Shop_Customer_Chat.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/shop_customer_profile.dart';
 
 class Orderreceavedlist extends StatefulWidget {
   const Orderreceavedlist({super.key});
@@ -35,6 +39,20 @@ class _OrderreceavedlistState extends State<Orderreceavedlist> {
         elevation: 6,
         backgroundColor: toggle2color,
         shadowColor: Colors.black54,
+        actions: [
+          IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_)=>ShopCustomerProfile()));
+          }, icon: Icon(Icons.person)),
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => ShopCustomerChat(
+                            reciveid: null.toString(), senderid: null.toString())));
+              },
+              icon: Icon(Icons.chat))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -96,76 +114,6 @@ class _OrderreceavedlistState extends State<Orderreceavedlist> {
                           ),
                         ],
                       ),
-                      const Spacer(),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                itemCounts.removeAt(index);
-                              });
-                            },
-                            borderRadius: BorderRadius.circular(50),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red.shade400,
-                                shape: BoxShape.circle,
-                              ),
-                              padding: const EdgeInsets.all(6),
-                              child: const Icon(Icons.close, color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(height: 30),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    if (itemCounts[index] > 1) {
-                                      itemCounts[index]--;
-                                    }
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(8),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(Icons.remove, size: 28),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 14.0),
-                                child: Text("${itemCounts[index]}",
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 0.8)),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    itemCounts[index]++;
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(8),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: toggle2color,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(Icons.add_box,
-                                      size: 28, color: Colors.white),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -196,14 +144,14 @@ class _OrderreceavedlistState extends State<Orderreceavedlist> {
               buildPriceRow("Delivery Fee", "$deliveryfee Rs"),
               buildPriceRow("Discount", "$discount Rs"),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildRadioButton("Pickup", "1"),
-                  const SizedBox(width: 40),
-                  buildRadioButton("Delivery", "2"),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     buildRadioButton("Pickup", "1"),
+              //     const SizedBox(width: 40),
+              //     buildRadioButton("Delivery", "2"),
+              //   ],
+              // ),
               const SizedBox(height: 20),
               MaterialButton(
                 elevation: 12.0,

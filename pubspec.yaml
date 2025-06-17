@@ -48,6 +48,7 @@ dependencies:
   google_nav_bar: ^5.0.7
   blur: ^4.0.0
   dropdown_search: ^6.0.2
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

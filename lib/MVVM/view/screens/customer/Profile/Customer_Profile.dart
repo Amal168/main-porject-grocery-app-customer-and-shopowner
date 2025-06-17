@@ -49,7 +49,6 @@ class _CustomerProfileState extends State<CustomerProfile> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                // Profile Card
                 Container(
                   margin: const EdgeInsets.all(16),
                   padding:

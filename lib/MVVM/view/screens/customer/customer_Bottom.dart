@@ -6,7 +6,7 @@ import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/produ
 class CustomerBottom extends StatefulWidget {
   String shopid;
   String customerid;
-  CustomerBottom({super.key, required this.customerid, required this.shopid});
+  CustomerBottom({super.key, required this.customerid, required this.shopid,});
 
   @override
   State<CustomerBottom> createState() => _CustomerBottomState();
@@ -25,9 +25,9 @@ class _CustomerBottomState extends State<CustomerBottom> {
   void initState() {
     // TODO: implement initState
     _customerPages= [
-    ProductItems(shopid:widget.shopid,),
+    ProductItems(shopid:widget.shopid,custid: widget.customerid,),
     const CustomerOrder(),
-    const CustomerShop()
+     CustomerShop(shopid: widget.shopid,)
   ];
     super.initState();
   }

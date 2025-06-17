@@ -4,6 +4,7 @@ import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/firebaseauth
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/Commonlogin.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/Common_Screen/CommonCommentRating.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/ShopOwner/shop_Order/orderReceavedList.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/Customer_Profile.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/edit_customer_profile.dart';
 
@@ -20,7 +21,7 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         title: const Text("Customer Profile",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -147,7 +148,7 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
                     color: Colors.redAccent,
                     onTap: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Commonlogin()));
+                          MaterialPageRoute(builder: (_) => Orderreceavedlist()));
                     },
                   ),
                   const SizedBox(height: 30),

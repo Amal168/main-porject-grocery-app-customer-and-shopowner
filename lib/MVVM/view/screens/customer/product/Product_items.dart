@@ -8,8 +8,8 @@ import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/produ
 
 class ProductItems extends StatefulWidget {
   final String shopid;
-
-  const ProductItems({super.key, required this.shopid});
+  final String custid;
+  const ProductItems({super.key, required this.shopid,required this.custid,});
 
   @override
   State<ProductItems> createState() => _ProductItemsState();
@@ -98,7 +98,7 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const ShopCustomerChat()),
+                          MaterialPageRoute(builder: (_) =>  ShopCustomerChat(reciveid: widget.shopid,senderid: widget.custid,)),
                         );
                       },
                     ),
