@@ -34,7 +34,7 @@ class _ShopCustomerChatState extends State<ShopCustomerChat> {
 
   Future<void> getReceiverName() async {
     final doc = await FirebaseFirestore.instance
-        .collection('users') // Change if using a different collection
+        .collection('users')
         .doc(widget.senderid)
         .get();
 
@@ -71,7 +71,6 @@ class _ShopCustomerChatState extends State<ShopCustomerChat> {
   Color bubbleColor = isCurrentUser ? toggle2color : Colors.grey.shade300;
   Color textColor = isCurrentUser ? Colors.white : Colors.black87;
 
-  // Parse the timestamp
   Timestamp timestamp = data['createdAt'] ?? Timestamp.now();
   DateTime dateTime = timestamp.toDate();
   String formattedTime = DateFormat('hh:mm a').format(dateTime); 

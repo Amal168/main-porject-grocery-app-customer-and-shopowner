@@ -49,6 +49,7 @@ dependencies:
   blur: ^4.0.0
   dropdown_search: ^6.0.2
   intl: ^0.20.2
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
