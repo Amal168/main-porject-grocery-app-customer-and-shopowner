@@ -85,7 +85,6 @@ class _OrderreceivedsendState extends State<Orderreceivedsend>
                     selected = index!;
 
                     selected == 0 ? color = [toggle2color] : [Colors.white];
-                    // debugPrint('Selected index: $selected');
                   });
                 },
               ),

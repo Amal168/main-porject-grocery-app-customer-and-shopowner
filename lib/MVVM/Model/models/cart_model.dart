@@ -11,6 +11,7 @@ class CartModel {
   String? total;
   String? id;
   Timestamp? addat;
+  String? cartuid;
   CartModel(
       {required this.delivery,
       required this.id,
@@ -21,6 +22,7 @@ class CartModel {
       required this.product_stock,
       required this.subtotal,
       required this.total,
+      required this.cartuid,
       required this.addat});
   factory CartModel.fromMap(Map<String, dynamic> map, {required String docId}) {
     return CartModel(
@@ -34,6 +36,7 @@ class CartModel {
       subtotal: map['subtotal'] ?? '',
       total: map['total'] ?? '',
       addat: map['addat'] ?? '',
+      cartuid: map['cartuid'] ?? '',
     );
   }
 
@@ -49,6 +52,7 @@ class CartModel {
       'subtotal': subtotal,
       'total': total,
       'addat': addat,
+      'cartuid': cartuid,
     };
   }
 }

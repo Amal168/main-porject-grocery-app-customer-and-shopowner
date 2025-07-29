@@ -16,6 +16,8 @@ class _AddoffersState extends State<Addoffers> {
   DateTime? setdate;
   bool offerSubmitted = false;
 
+  final TextEditingController _titleController = TextEditingController();
+
   Future pickimage(ImageSource source) async {
     final imagefile = await ImagePicker().pickImage(source: source);
     if (imagefile != null) {
@@ -57,6 +59,46 @@ class _AddoffersState extends State<Addoffers> {
     );
   }
 
+  Future<void> submitOffer() async {
+    if (
+      // _image == null ||
+       setdate == null ||
+        _titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Please add a title, select an image, and pick a date")),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseFirestore.instance.collection('offers').add({
+        'title': _titleController.text.trim(),
+        'offerEndDate': Timestamp.fromDate(setdate!),
+        'createdAt': FieldValue.serverTimestamp(),
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      setState(() {
+        offerSubmitted = true;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Offer successfully submitted")),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +116,25 @@ class _AddoffersState extends State<Addoffers> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text("Offer Title",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey.shade800)),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _titleController,
+              decoration: InputDecoration(
+                hintText: "Enter offer title",
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade400),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
             Text("Upload Image",
                 style: TextStyle(
                     fontSize: 20,
@@ -161,9 +222,7 @@ class _AddoffersState extends State<Addoffers> {
             const SizedBox(height: 40),
             Center(
               child: MaterialButton(
-                onPressed: () {
-                  FirebaseFirestore.instance.collection('offers').add({});
-                },
+                onPressed: submitOffer,
                 minWidth: 200,
                 height: 50,
                 color: toggle3color,

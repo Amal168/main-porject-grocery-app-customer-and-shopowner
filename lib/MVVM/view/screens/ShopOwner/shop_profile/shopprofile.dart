@@ -78,7 +78,6 @@ class Shopprofile extends StatelessWidget {
               
               child: Column(
                 children: [
-                  // Shop Photo Banner
                   Stack(
                     alignment: Alignment.bottomCenter,
                     clipBehavior: Clip.none,
@@ -110,7 +109,6 @@ class Shopprofile extends StatelessWidget {
                             : null,
                       ),
 
-                      // Owner Photo - Overlapping Circle Avatar
                       Positioned(
                         bottom: -45,
                         child: CircleAvatar(
@@ -130,7 +128,6 @@ class Shopprofile extends StatelessWidget {
 
                   const SizedBox(height: 60),
 
-                  // Shop Name & Hours
                   Text(
                     data['name'],
                     style: TextStyle(
@@ -146,7 +143,6 @@ class Shopprofile extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  // Info Cards
                   infoCard(data['phone'], Icons.phone),
                   infoCard(data['location'], Icons.location_city),
                   infoCard(data['email'], Icons.email),
@@ -154,7 +150,6 @@ class Shopprofile extends StatelessWidget {
 
                   const SizedBox(height: 30),
 
-                  // Action Buttons
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(

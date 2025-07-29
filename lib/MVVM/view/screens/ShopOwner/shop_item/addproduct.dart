@@ -123,7 +123,6 @@ class _AddproductState extends State<Addproduct> {
       "created_at": FieldValue.serverTimestamp(),
     });
 
-    // Reset fields
     _nameController.clear();
     _priceController.clear();
     _unitController.clear();

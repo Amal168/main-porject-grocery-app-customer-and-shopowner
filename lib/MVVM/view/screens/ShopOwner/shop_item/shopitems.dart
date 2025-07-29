@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,15 @@ class Shopitems extends StatefulWidget {
 class _ShopitemsState extends State<Shopitems> with TickerProviderStateMixin {
   TabController? _tabController;
   List<String> _categories = ['All'];
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  Timer? _debounce;
 
   @override
   void dispose() {
     _tabController?.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -68,7 +74,17 @@ class _ShopitemsState extends State<Shopitems> with TickerProviderStateMixin {
                       child: SizedBox(
                         height: 40,
                         child: TextFormField(
+                          controller: _searchController,
+                          onChanged: (val) {
+                            if (_debounce?.isActive ?? false) _debounce!.cancel();
+                            _debounce = Timer(const Duration(milliseconds: 400), () {
+                              setState(() {
+                                _searchQuery = val.trim().toLowerCase();
+                              });
+                            });
+                          },
                           decoration: InputDecoration(
+                            hintText: 'Search your products',
                             filled: true,
                             fillColor: Colors.white,
                             prefixIcon: const Icon(Icons.search),
@@ -102,7 +118,6 @@ class _ShopitemsState extends State<Shopitems> with TickerProviderStateMixin {
                 ),
               ),
 
-              // TabBar
               Container(
                 color: toggle2color,
                 child: TabBar(
@@ -115,12 +130,14 @@ class _ShopitemsState extends State<Shopitems> with TickerProviderStateMixin {
                 ),
               ),
 
-              // TabBarView
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
                   children: _categories
-                      .map((cat) => ShopItemsTabView(category: cat))
+                      .map((cat) => ShopItemsTabView(
+                            category: cat,
+                            searchQuery: _searchQuery,
+                          ))
                       .toList(),
                 ),
               ),

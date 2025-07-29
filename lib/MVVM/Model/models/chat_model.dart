@@ -17,16 +17,7 @@ class ChatModel {
     required this.createdAt,
   });
 
-  // factory ChatModel.fromMap(Map<String, dynamic> map) {
-  //   return ChatModel(
-  //     message: map['message'] ?? '',
-  //     receiverId: map['receiverId'] ?? '',
-  //     senderId: map['senderId'] ?? '',
-  //     senderName: map['senderName'] ?? '',
-  //     senderPhone: map['senderPhone'] ?? '',
-  //     createdAt: map['createdAt'] ?? Timestamp.now(),
-  //   );
-  // }
+
 
   Map<String, dynamic> toMap() {
     return {

@@ -112,7 +112,6 @@ class _CustomerProfileState extends State<CustomerProfile> {
                   ),
                 ),
 
-                // Info Section
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   padding: const EdgeInsets.all(16),
@@ -146,7 +145,6 @@ class _CustomerProfileState extends State<CustomerProfile> {
 
                 const SizedBox(height: 20),
 
-                // Action Buttons
                 ButtonTile(
                   icon: Icons.feedback_outlined,
                   label: "Feedback",
@@ -260,7 +258,6 @@ class _CustomerProfileState extends State<CustomerProfile> {
   }
 }
 
-// Info row widget
 class InfoTile extends StatelessWidget {
   final String label;
   final String value;
@@ -289,7 +286,6 @@ class InfoTile extends StatelessWidget {
   }
 }
 
-// Button row widget
 class ButtonTile extends StatelessWidget {
   final IconData icon;
   final String label;

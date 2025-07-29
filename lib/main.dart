@@ -5,7 +5,6 @@ import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/Co
 import 'package:grocery_customer_and_shopowner2/MVVM/view/auth/Common_screens/SplashScreen.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/Common_Screen/CommonCommentRating.dart';
 import 'package:grocery_customer_and_shopowner2/firebase_options.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'List2Local',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,

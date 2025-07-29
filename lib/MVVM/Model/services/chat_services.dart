@@ -1,43 +1,35 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  // Send a message
-  Future<void> sendMessage(String receiverId, String messageText) async {
-    final String senderId = _firebaseAuth.currentUser!.uid;
-    final Timestamp timestamp = Timestamp.now();
-
-    // Create unique chat room ID by sorting both UIDs
-    List<String> ids = [senderId, receiverId];
-    ids.sort();
-    String chatRoomId = ids.join('_');
-
-    // Store message in Firestore
-    await _firestore.collection('chats')
-        .doc(chatRoomId)
-        .collection('messages')
-        .add({
-      'senderId': senderId,
-      'receiverId': receiverId,
-      'message': messageText,
-      'createdAt': timestamp,
-    });
+  /// Uploads any file (image/audio) and returns the download URL
+  Future<String> uploadFile(File file, String folderName) async {
+    final fileId = const Uuid().v4();
+    final ref = _storage.ref().child('$folderName/$fileId');
+    await ref.putFile(file);
+    return await ref.getDownloadURL();
   }
 
-  // Get messages stream
-  Stream<QuerySnapshot> getmessage(String receiverId, String senderId) {
-    List<String> ids = [receiverId, senderId];
-    ids.sort();
-    String chatRoomId = ids.join('_');
-
-    return _firestore
-        .collection('chats')
-        .doc(chatRoomId)
-        .collection('messages')
-        .orderBy('createdAt', descending: false)
-        .snapshots();
+  /// Sends a chat message with optional text, image, or audio
+  Future<void> sendMessage({
+    required String senderId,
+    required String receiverId,
+    String? text,
+    String? imageUrl,
+    String? audioUrl,
+  }) async {
+    await _firestore.collection('chats').add({
+      'sender_id': senderId,
+      'receiver_id': receiverId,
+      'timestamp': FieldValue.serverTimestamp(),
+      'text': text ?? '',
+      'image_url': imageUrl ?? '',
+      'audio_url': audioUrl ?? '',
+    });
   }
 }

@@ -21,7 +21,6 @@ class _MainpageState extends State<Mainpage> {
       backgroundColor: Colors.grey.shade100,
       body: Column(
         children: [
-          // Header with gradient and avatar
           Container(
             width: double.infinity,
             padding: const EdgeInsets.only(top: 50, bottom: 30),
@@ -77,7 +76,6 @@ class _MainpageState extends State<Mainpage> {
 
           const SizedBox(height: 20),
 
-          // ToggleSwitch inside Card
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Card(
@@ -115,7 +113,6 @@ class _MainpageState extends State<Mainpage> {
 
           const SizedBox(height: 10),
 
-          // Content switcher
           Expanded(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),

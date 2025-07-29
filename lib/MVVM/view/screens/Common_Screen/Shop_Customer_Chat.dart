@@ -1,18 +1,21 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/Model/services/chat_services.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
-import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ShopCustomerChat extends StatefulWidget {
-  final String senderid;
-  final String reciveid;
+  final String senderId;
+  final String receiverId;
 
-  ShopCustomerChat({
+  const ShopCustomerChat({
     super.key,
-    required this.reciveid,
-    required this.senderid,
+    required this.senderId,
+    required this.receiverId,
   });
 
   @override
@@ -20,277 +23,241 @@ class ShopCustomerChat extends StatefulWidget {
 }
 
 class _ShopCustomerChatState extends State<ShopCustomerChat> {
-  final TextEditingController chatController = TextEditingController();
-  final ChatServices _chatServices = ChatServices();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final TextEditingController _messageController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  String sendername = '';
+  FlutterSoundRecorder? _audioRecorder;
+  bool _isRecording = false;
+  String? _recordedFilePath;
 
   @override
   void initState() {
     super.initState();
-    getReceiverName();
+    _audioRecorder = FlutterSoundRecorder();
+    _initRecorder();
   }
 
-  Future<void> getReceiverName() async {
-    final doc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.senderid)
-        .get();
+  Future<void> _initRecorder() async {
+    await _audioRecorder!.openRecorder();
+  }
 
-    if (doc.exists) {
-      setState(() {
-        sendername = doc['name'] ?? 'Unknown';
-      });
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _audioRecorder?.closeRecorder();
+    super.dispose();
+  }
+
+  Future<void> _sendMessage({
+    String? text,
+    String? imageUrl,
+    String? audioUrl,
+  }) async {
+    if ((text == null || text.trim().isEmpty) &&
+        imageUrl == null &&
+        audioUrl == null) return;
+
+    await _firestore.collection('messages').add({
+      'text': text ?? '',
+      'image_url': imageUrl ?? '',
+      'audio_url': audioUrl ?? '',
+      'senderId': widget.senderId,
+      'receiverId': widget.receiverId,
+      'timestamp': Timestamp.now(),
+    });
+
+    _messageController.clear();
+  }
+
+  Future<void> _pickImage() async {
+    final picked =
+        await ImagePicker().pickImage(source: ImageSource.gallery, imageQuality: 75);
+    if (picked != null) {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('chat_images')
+          .child('${const Uuid().v4()}.jpg');
+      await ref.putFile(File(picked.path));
+      final imageUrl = await ref.getDownloadURL();
+      _sendMessage(imageUrl: imageUrl);
     }
   }
 
-  void sendMessage() async {
-    if (chatController.text.trim().isEmpty) return;
-    await _chatServices.sendMessage(widget.reciveid, chatController.text.trim());
-    chatController.clear();
+  Future<void> _startRecording() async {
+    final dir = await getTemporaryDirectory();
+    _recordedFilePath = '${dir.path}/${const Uuid().v4()}.aac';
+    await _audioRecorder!.startRecorder(toFile: _recordedFilePath);
+    setState(() => _isRecording = true);
   }
 
-  void deleteMessage(String docId) async {
-    List<String> ids = [widget.reciveid, _firebaseAuth.currentUser!.uid];
-    ids.sort();
-    String chatRoomId = ids.join("_");
-
-    await FirebaseFirestore.instance
-        .collection('chats')
-        .doc(chatRoomId)
-        .collection('messages')
-        .doc(docId)
-        .delete();
+  Future<void> _stopRecording() async {
+    await _audioRecorder!.stopRecorder();
+    setState(() => _isRecording = false);
+    if (_recordedFilePath != null) {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('chat_audio')
+          .child('${const Uuid().v4()}.aac');
+      await ref.putFile(File(_recordedFilePath!));
+      final audioUrl = await ref.getDownloadURL();
+      _sendMessage(audioUrl: audioUrl);
+    }
   }
 
-  Widget _buildMessageItem(DocumentSnapshot document) {
-  Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-  bool isCurrentUser = data['senderId'] == _firebaseAuth.currentUser!.uid;
-  Alignment alignment = isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
-  Color bubbleColor = isCurrentUser ? toggle2color : Colors.grey.shade300;
-  Color textColor = isCurrentUser ? Colors.white : Colors.black87;
+  Widget _buildMessage(DocumentSnapshot doc) {
+    final msg = doc.data() as Map<String, dynamic>;
+    final isMe = msg['senderId'] == widget.senderId;
 
-  Timestamp timestamp = data['createdAt'] ?? Timestamp.now();
-  DateTime dateTime = timestamp.toDate();
-  String formattedTime = DateFormat('hh:mm a').format(dateTime); 
-
-  return Align(
-    alignment: alignment,
-    child: Dismissible(
-      key: Key(document.id),
-      direction: isCurrentUser ? DismissDirection.endToStart : DismissDirection.none,
-      confirmDismiss: (_) async {
-        return await showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text("Delete Message"),
-            content: const Text("Are you sure you want to delete this message?"),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context, false),
-                  child: const Text("Cancel")),
-              TextButton(
-                  onPressed: () => Navigator.pop(context, true),
-                  child: const Text("Delete")),
+    return GestureDetector(
+      onLongPress: () {
+        if (isMe) {
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text("Delete Message"),
+              content: const Text("Are you sure you want to delete this message?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await _firestore.collection('messages').doc(doc.id).delete();
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                )
+              ],
+            ),
+          );
+        }
+      },
+      child: Align(
+        alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: isMe ? toggle2color : Colors.grey[200],
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(12),
+              topRight: const Radius.circular(12),
+              bottomLeft: Radius.circular(isMe ? 12 : 0),
+              bottomRight: Radius.circular(isMe ? 0 : 12),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment:
+                isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: [
+              if (msg['text'] != null && msg['text'].toString().isNotEmpty)
+                Text(
+                  msg['text'],
+                  style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                ),
+              if (msg['image_url'] != null &&
+                  msg['image_url'].toString().isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      msg['image_url'],
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              if (msg['audio_url'] != null &&
+                  msg['audio_url'].toString().isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: IconButton(
+                    icon: Icon(Icons.play_arrow,
+                        color: isMe ? Colors.white : Colors.black),
+                    onPressed: () async {
+                      final player = FlutterSoundPlayer();
+                      await player.openPlayer();
+                      await player.startPlayer(
+                        fromURI: msg['audio_url'],
+                        whenFinished: () => player.closePlayer(),
+                      );
+                    },
+                  ),
+                ),
             ],
           ),
-        );
-      },
-      onDismissed: (_) => deleteMessage(document.id),
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20),
-        decoration: BoxDecoration(
-          color: Colors.red,
-          borderRadius: BorderRadius.circular(15)
-        ),
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-        decoration: BoxDecoration(
-          color: bubbleColor,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              formattedTime,
-              style: TextStyle(color: textColor, fontSize: 10),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              data['message'] ?? '',
-              style: TextStyle(color: textColor),
-            ),
-          ],
         ),
       ),
-    ),
-  );
-}
-
-
-  Widget _buildMessageList() {
-    return StreamBuilder(
-      stream: _chatServices.getmessage(widget.reciveid, _firebaseAuth.currentUser!.uid),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Center(child: Text("Error: ${snapshot.error}"));
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        return ListView(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          reverse: false,
-          children: snapshot.data!.docs
-              .map((document) => _buildMessageItem(document))
-              .toList(),
-        );
-      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: chatbackground,
       appBar: AppBar(
-        elevation: 4,
+        title: const Text("Chat", style: TextStyle(color: Colors.white)),
+        centerTitle: true,
         backgroundColor: toggle2color,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-        ),
-        titleSpacing: 0,
-        title: Row(
-          children: [
-            const CircleAvatar(
-              backgroundImage: AssetImage("assets/dummy profile photo.jpg"),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              sendername.isNotEmpty ? sendername : "Loading...",
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Calling Customer")),
-              );
-            },
-            icon: const Icon(Icons.phone, color: Colors.white),
-          ),
-          const SizedBox(width: 10),
-        ],
       ),
       body: Column(
         children: [
-          Expanded(child: _buildMessageList()),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 4,
-                  offset: Offset(0, -2),
-                ),
-              ],
+          Expanded(
+            child: StreamBuilder(
+              stream: _firestore
+                  .collection('messages')
+                  .orderBy('timestamp')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+                final docs = snapshot.data!.docs.where((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+                  return (data['senderId'] == widget.senderId &&
+                          data['receiverId'] == widget.receiverId) ||
+                      (data['senderId'] == widget.receiverId &&
+                          data['receiverId'] == widget.senderId);
+                }).toList();
+                return ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: docs.length,
+                  itemBuilder: (_, i) => _buildMessage(docs[i]),
+                );
+              },
             ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            color: Colors.white,
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                IconButton(
+                  icon: const Icon(Icons.image),
+                  onPressed: _pickImage,
+                ),
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(1, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: chatController,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "Type a message...",
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.camera_alt_outlined),
-                          onPressed: () {},
-                          color: Colors.grey[700],
-                        ),
-                      ],
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: const InputDecoration(
+                      hintText: 'Type a message',
+                      border: InputBorder.none,
                     ),
                   ),
                 ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    _roundedIconButton(
-                      icon: Icons.mic,
-                      onPressed: sendMessage,
-                      color: greenbutton,
-                    ),
-                    const SizedBox(height: 8),
-                    _roundedIconButton(
-                      icon: Icons.send,
-                      onPressed: sendMessage,
-                      color: toggle2color,
-                    ),
-                  ],
+                IconButton(
+                  icon: Icon(_isRecording ? Icons.stop : Icons.mic),
+                  onPressed: _isRecording ? _stopRecording : _startRecording,
+                  color: _isRecording ? Colors.red : Colors.black,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () => _sendMessage(text: _messageController.text),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _roundedIconButton({
-    required IconData icon,
-    required VoidCallback onPressed,
-    required Color color,
-  }) {
-    return Container(
-      width: 50,
-      height: 50,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 6,
-            offset: Offset(2, 4),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: Colors.white),
-        onPressed: onPressed,
       ),
     );
   }

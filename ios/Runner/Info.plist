@@ -46,4 +46,6 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 </dict>
+<key>NSMicrophoneUsageDescription</key>
+<string>We need your microphone for sending voice messages.</string>
 </plist>

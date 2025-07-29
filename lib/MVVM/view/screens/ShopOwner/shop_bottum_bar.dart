@@ -18,7 +18,7 @@ class _ShopBottumBarState extends State<ShopBottumBar> {
     Shopitems(),
     Addoffers(),
   ];
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,8 @@ import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profi
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/Profile/edit_customer_profile.dart';
 
 class ShopCustomerProfile extends StatefulWidget {
-  const ShopCustomerProfile({super.key});
+  String customerid;
+  ShopCustomerProfile({super.key, required this.customerid});
 
   @override
   State<ShopCustomerProfile> createState() => _CustomerProfileState();
@@ -28,10 +29,10 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
         backgroundColor: toggle2color,
         elevation: 0,
       ),
-      body: FutureBuilder(
+      body: FutureBuilder<DocumentSnapshot>(
           future: FirebaseFirestore.instance
               .collection('users')
-              .doc(Firebaseothservices().uid)
+              .doc(widget.customerid)
               .get(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -39,18 +40,17 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
                 child: CircularProgressIndicator(),
               );
             }
-            final data = snapshot.data!.data();
-
-            if (data == null) {
+            if (!snapshot.hasData || !snapshot.data!.exists) {
               return Center(
                 child: Text('No user data'),
               );
             }
 
+            final data = snapshot.data!.data() as Map<String, dynamic>;
+
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  // Profile Card
                   Container(
                     margin: const EdgeInsets.all(16),
                     padding: const EdgeInsets.symmetric(
@@ -81,13 +81,14 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
                                 children: [
                                   CircleAvatar(
                                     radius: 55,
-                                    backgroundImage: AssetImage(
-                                        "assets/dummy profile photo.jpg"),
+                                    backgroundImage: data['image_url'] != null && data['image_url'] != ""
+                                        ? NetworkImage(data['image_url']) as ImageProvider
+                                        : AssetImage("assets/dummy profile photo.jpg"),
                                     backgroundColor: Colors.white,
                                   ),
                                   SizedBox(height: 10),
                                   Text(
-                                    "Customer Name",
+                                    data['name'] ?? "Customer Name",
                                     style: TextStyle(
                                         fontSize: 22,
                                         color: Colors.white,
@@ -96,22 +97,20 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
                                 ],
                               ),
                             ),
-                            IconButton(
-                              icon: Icon(Icons.edit, color: Colors.white70),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => EditCustomerProfile()));
-                              },
-                            )
+                            // IconButton(
+                            //   icon: Icon(Icons.edit, color: Colors.white70),
+                            //   onPressed: () {
+                            //     Navigator.push(
+                            //         context,
+                            //         MaterialPageRoute(
+                            //             builder: (_) => EditCustomerProfile()));
+                            //   },
+                            // )
                           ],
                         ),
                       ],
                     ),
                   ),
-
-                  // Info Section
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 16),
                     padding: EdgeInsets.all(16),
@@ -127,28 +126,25 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        InfoTile(label: "Mobile Number", value: "1234567890"),
+                      children: [
+                        InfoTile(label: "Mobile Number", value: data['phone'] ?? "N/A"),
                         Divider(),
-                        InfoTile(label: "Place", value: "Your City"),
+                        InfoTile(label: "Location", value: data['location'] ?? "N/A"),
                         Divider(),
-                        InfoTile(label: "Email", value: "Customer@gmail.com"),
+                        InfoTile(label: "Email", value: data['email'] ?? "N/A"),
                         Divider(),
-                        InfoTile(
-                            label: "Location", value: "Street XYZ, Area ABC"),
+                        InfoTile(label: "Address", value: data['Address'] ?? "N/A"),
+                        
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 30),
-
                   ButtonTile(
                     icon: Icons.arrow_back_ios_new_outlined,
                     label: "Back",
                     color: Colors.redAccent,
                     onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => Orderreceavedlist()));
+                      Navigator.pop(context);
                     },
                   ),
                   const SizedBox(height: 30),
@@ -160,5 +156,61 @@ class _CustomerProfileState extends State<ShopCustomerProfile> {
   }
 }
 
+class InfoTile extends StatelessWidget {
+  final String label;
+  final String value;
 
-// Button row widget
+  const InfoTile({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(fontWeight: FontWeight.w600)),
+          Text(value, style: TextStyle(color: Colors.grey[600]))
+        ],
+      ),
+    );
+  }
+}
+
+class ButtonTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const ButtonTile({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 40),
+        padding: EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white),
+            SizedBox(width: 8),
+            Text(label,
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+          ],
+        ),
+      ),
+    );
+  }
+}

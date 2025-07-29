@@ -35,7 +35,6 @@ class _CommonloginState extends State<Commonlogin> {
           email.text.trim(),
           password.text.trim(),
         );
-        // Navigate to home or dashboard
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Login successful")),
         );
@@ -58,7 +57,6 @@ class _CommonloginState extends State<Commonlogin> {
       ),
       child: Stack(
         children: [
-          // Dark overlay shade
           Container(
             color: Colors.black.withOpacity(0.4),
           ),
@@ -73,7 +71,6 @@ class _CommonloginState extends State<Commonlogin> {
                     key: formKey,
                     child: Column(
                       children: [
-                        // App Logo
                         Container(
                           height: 160,
                           width: 160,

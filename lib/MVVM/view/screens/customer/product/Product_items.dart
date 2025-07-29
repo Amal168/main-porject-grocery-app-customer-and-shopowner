@@ -3,21 +3,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/Common_Screen/Shop_Customer_Chat.dart';
-import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/customer_cart.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/Customer_all_tab.dart';
+import 'package:grocery_customer_and_shopowner2/MVVM/view/screens/customer/product/customer_cart.dart';
+import 'dart:async';
 
 class ProductItems extends StatefulWidget {
   final String shopid;
   final String custid;
-  const ProductItems({super.key, required this.shopid,required this.custid,});
+
+  const ProductItems({super.key, required this.shopid, required this.custid});
 
   @override
   State<ProductItems> createState() => _ProductItemsState();
 }
 
-class _ProductItemsState extends State<ProductItems> with TickerProviderStateMixin {
+class _ProductItemsState extends State<ProductItems>
+    with TickerProviderStateMixin {
+  Timer? _debounce;
+
   TabController? _tabController;
   List<String> _categories = ['All'];
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   void _updateTabController(List<String> categories) {
     _tabController?.dispose();
@@ -27,6 +34,8 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
   @override
   void dispose() {
     _tabController?.dispose();
+    _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -63,7 +72,8 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
 
         final newCategories = ['All', ...allCategories];
 
-        if (_tabController == null || _categories.join() != newCategories.join()) {
+        if (_tabController == null ||
+            _categories.join() != newCategories.join()) {
           _categories = newCategories;
           _updateTabController(_categories);
         }
@@ -73,14 +83,27 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
             children: [
               Container(
                 color: toggle2color,
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 child: Row(
                   children: [
                     Expanded(
                       child: SizedBox(
                         height: 40,
                         child: TextFormField(
+                          controller: _searchController,
+                          onChanged: (val) {
+                            if (_debounce?.isActive ?? false)
+                              _debounce!.cancel();
+                            _debounce =
+                                Timer(const Duration(milliseconds: 300), () {
+                              setState(() {
+                                _searchQuery = val.trim().toLowerCase();
+                              });
+                            });
+                          },
                           decoration: InputDecoration(
+                            hintText: 'Search Your items',
                             filled: true,
                             fillColor: Colors.white,
                             prefixIcon: const Icon(Icons.search),
@@ -98,7 +121,12 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) =>  ShopCustomerChat(reciveid: widget.shopid,senderid: widget.custid,)),
+                          MaterialPageRoute(
+                            builder: (_) => ShopCustomerChat(
+                              receiverId: widget.shopid,
+                              senderId: widget.custid,
+                            ),
+                          ),
                         );
                       },
                     ),
@@ -108,7 +136,8 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const CustomerCart()),
+                          MaterialPageRoute(
+                              builder: (_) =>  CustomerCart(shopid:widget.shopid)),
                         );
                       },
                     ),
@@ -137,6 +166,7 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
                             .map((cat) => CustomerAllTab(
                                   category: cat,
                                   shopid: widget.shopid,
+                                  searchQuery: _searchQuery,
                                 ))
                             .toList(),
                       ),
@@ -148,7 +178,8 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
     );
   }
 
-  Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
+  Widget _buildIconButton(
+      {required IconData icon, required VoidCallback onTap}) {
     return Container(
       width: 40,
       height: 40,
@@ -157,7 +188,7 @@ class _ProductItemsState extends State<ProductItems> with TickerProviderStateMix
         color: Colors.white,
       ),
       child: IconButton(
-        icon: Icon(icon),
+        icon: Icon(icon,color:Colors.green,),
         onPressed: onTap,
       ),
     );

@@ -42,6 +42,15 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    int crossAxisCount = 3;
+    if (screenWidth >= 600) {
+      crossAxisCount = 3;
+    }
+    if (screenWidth >= 900) {
+      crossAxisCount = 4;
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -125,13 +134,16 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                       itemBuilder: (context, index) {
                         final shopData =
                             docs[index].data() as Map<String, dynamic>;
-                            final shopId = docs[index].id;
-                            final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+                        final shopId = docs[index].id;
+                        final currentUserId =
+                            FirebaseAuth.instance.currentUser!.uid;
                         return GestureDetector(
                           onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (_) => CustomerBottom(shopid: shopId,customerid: currentUserId))),
+                                  builder: (_) => CustomerBottom(
+                                      shopid: shopId,
+                                      customerid: currentUserId))),
                           child: Container(
                             margin: const EdgeInsets.only(right: 12),
                             width: 160,
@@ -204,8 +216,7 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
 
                   final allShops = snapshot.data!.docs.where((doc) {
                     final data = doc.data() as Map<String, dynamic>;
-                    if (data['location'] == location)
-                      return false; // Skip nearest
+                    if (data['location'] == location) return false;
                     final shopName =
                         (data['shopname'] ?? '').toString().toLowerCase();
                     final place =
@@ -218,22 +229,24 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: allShops.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 15,
-                      crossAxisSpacing: 15,
-                      childAspectRatio: 0.79,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      mainAxisSpacing: 40,
+                      crossAxisSpacing: 3,
+                      childAspectRatio: 0.7,
                     ),
                     itemBuilder: (context, index) {
                       final shopData =
                           allShops[index].data() as Map<String, dynamic>;
-                          final shopId = allShops[index].id;
-                          final currentUserId = FirebaseAuth.instance.currentUser!.uid;
+                      final shopId = allShops[index].id;
+                      final currentUserId =
+                          FirebaseAuth.instance.currentUser!.uid;
                       return GestureDetector(
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => CustomerBottom(shopid: shopId,customerid:currentUserId ,)),
+                          MaterialPageRoute(
+                              builder: (_) => CustomerBottom(
+                                  shopid: shopId, customerid: currentUserId)),
                         ),
                         child: Container(
                           decoration: BoxDecoration(
@@ -268,14 +281,14 @@ class _CustomerShopMainPageState extends State<CustomerShopMainPage> {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 13)),
-                                         const SizedBox(height: 6),
+                                const SizedBox(height: 6),
                                 Text(shopData['location'] ?? "",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                         fontSize: 12, color: Colors.grey)),
-                                          const SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 Text(shopData['phone'] ?? "",
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(fontSize: 11)),

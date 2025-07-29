@@ -8,7 +8,8 @@ import 'package:grocery_customer_and_shopowner2/MVVM/utils/custome/customebutton
 class CommonCommentRating extends StatefulWidget {
   String name;
   String phone;
-   CommonCommentRating({super.key,required this .name,required this.phone});
+
+  CommonCommentRating({super.key, required this.name, required this.phone});
 
   @override
   State<CommonCommentRating> createState() => _CommonCommentRatingState();
@@ -47,7 +48,6 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -70,16 +70,12 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
                 ),
               ),
             ),
-
             const SizedBox(height: 30),
-
             const Text(
               "Rating",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-
-            // Rating bar
             Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
               decoration: BoxDecoration(
@@ -114,15 +110,14 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
                 ),
               ),
             ),
-
             const SizedBox(height: 50),
-
             Align(
               alignment: Alignment.center,
               child: Customebutton(
                 shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 width: 160,
                 hight: 50,
@@ -134,8 +129,9 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
                   if (user == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content:
-                              Text("You must be logged in to send feedback.")),
+                        content:
+                            Text("You must be logged in to send feedback."),
+                      ),
                     );
                     return;
                   }
@@ -143,7 +139,8 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
                   if (_comments.text.trim().isEmpty && _rating == 0) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text("Please provide a comment or rating.")),
+                          content:
+                              Text("Please provide a comment or rating.")),
                     );
                     return;
                   }
@@ -153,10 +150,10 @@ class _CommonCommentRatingState extends State<CommonCommentRating> {
                       .add({
                     "user_id": user.uid,
                     "message": _comments.text.trim(),
-                    "rating": _rating as num,
-                    'phonenumber':widget.phone,
-                    "timestamp": FieldValue.serverTimestamp() as TimeOfDay,
-                    'name':widget.name
+                    "rating": _rating,
+                    "phonenumber": widget.phone,
+                    "timestamp": FieldValue.serverTimestamp(), 
+                    "name": widget.name,
                   });
 
                   Navigator.pop(context);

@@ -1,12 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_customer_and_shopowner2/MVVM/utils/color.dart';
 
 class CustomerAllTab extends StatefulWidget {
   final String category;
   final String shopid;
+  final String searchQuery;
 
-  const CustomerAllTab({super.key, required this.category, required this.shopid});
+  const CustomerAllTab({
+    super.key,
+    required this.category,
+    required this.shopid,
+    required this.searchQuery,
+  });
 
   @override
   State<CustomerAllTab> createState() => _CustomerAllTabState();
@@ -61,6 +68,56 @@ class _CustomerAllTabState extends State<CustomerAllTab> {
     return query.snapshots();
   }
 
+  Future<void> updateProductStock(String productId, int newStock) async {
+    await FirebaseFirestore.instance
+        .collection('products')
+        .doc(productId)
+        .update({'stock': newStock});
+  }
+
+  Future<void> addToCart(Map<String, dynamic> product) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+
+    final cartRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser.uid)
+        .collection('cart');
+
+    final productId = product['product_id'];
+
+    final existing = await cartRef.where('product_id', isEqualTo: productId).get();
+
+    if (existing.docs.isNotEmpty) {
+      final doc = existing.docs.first;
+      await cartRef.doc(doc.id).update({
+        'quantity': FieldValue.increment(1),
+      });
+    } else {
+      await cartRef.add({
+        'product_id': productId,
+        'product_name': product['product_name'],
+        'image': product['image'],
+        'unit': product['unit'],
+        'price': product['product_price'],
+        'quantity': 1,
+        'shop_id': widget.shopid,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    }
+
+    // Update stock after adding to cart
+    int currentStock = product['stock'] ?? 0;
+    if (currentStock > 0) {
+      int updatedStock = currentStock - 1;
+      await updateProductStock(productId, updatedStock);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Added to cart')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -81,7 +138,7 @@ class _CustomerAllTabState extends State<CustomerAllTab> {
                     onSelected: (_) {
                       setState(() {
                         selectedType = type;
-                        selectedIndex = -1; // Reset selected index
+                        selectedIndex = -1;
                       });
                     },
                     selectedColor: toggle2color,
@@ -102,11 +159,18 @@ class _CustomerAllTabState extends State<CustomerAllTab> {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              if (snapshot.hasError || !snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              if (snapshot.hasError || !snapshot.hasData) {
                 return const Center(child: Text('No products found.'));
               }
 
-              final products = snapshot.data!.docs;
+              final products = snapshot.data!.docs.where((doc) {
+                final name = (doc['product_name'] ?? '').toString().toLowerCase();
+                return name.contains(widget.searchQuery.toLowerCase());
+              }).toList();
+
+              if (products.isEmpty) {
+                return const Center(child: Text('No products match your search.'));
+              }
 
               return GridView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -115,7 +179,7 @@ class _CustomerAllTabState extends State<CustomerAllTab> {
                   crossAxisCount: 2,
                   mainAxisSpacing: 15,
                   crossAxisSpacing: 15,
-                  mainAxisExtent: 270,
+                  mainAxisExtent: 280,
                 ),
                 itemBuilder: (context, index) {
                   final product = products[index].data() as Map<String, dynamic>;
@@ -156,7 +220,7 @@ class _CustomerAllTabState extends State<CustomerAllTab> {
                                     fit: BoxFit.cover,
                                   )
                                 : Image.asset(
-                                    'assets/package .jpg',
+                                    'assets/dummy image.jpeg',
                                     width: double.infinity,
                                     height: 100,
                                     fit: BoxFit.cover,
@@ -198,9 +262,7 @@ class _CustomerAllTabState extends State<CustomerAllTab> {
                                 ),
                               ),
                               onPressed: () {
-                                setState(() {
-                                  selectedIndex = index;
-                                });
+                                addToCart(product);
                               },
                               child: Text(isSelected ? "Selected" : "Select"),
                             ),

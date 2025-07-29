@@ -23,11 +23,10 @@ class _CustomerBottomState extends State<CustomerBottom> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _customerPages= [
     ProductItems(shopid:widget.shopid,custid: widget.customerid,),
-    const CustomerOrder(),
-     CustomerShop(shopid: widget.shopid,)
+    CustomerOrder(customerid:widget.customerid,shopid: widget.shopid, ),
+    CustomerShop(shopid: widget.shopid,)
   ];
     super.initState();
   }
